@@ -1,0 +1,15 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+development:
+  <<: *default
+  database: <%= File.read(Rails.root.join('name')).chomp %>_development
+test:
+  <<: *default
+  database: <%= File.read(Rails.root.join('name')).chomp %>_test
+production:
+  <<: *default
+  database: <%= File.read(Rails.root.join('name')).chomp %>_production
+  username: deploy
+  password: <%= ENV['TYE_DATABASE_PASSWORD'] %>
