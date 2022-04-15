@@ -4,12 +4,12 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 development:
   <<: *default
-  database: <%= File.read(Rails.root.join('name')).chomp %>_development
+  database: <%= File.basename(File.expand_path('../..', __FILE__)).split('.').first %>_development
 test:
   <<: *default
-  database: <%= File.read(Rails.root.join('name')).chomp %>_test
+  database: <%= File.basename(File.expand_path('../..', __FILE__)).split('.').first %>_test
 production:
   <<: *default
-  database: <%= File.read(Rails.root.join('name')).chomp %>_production
+  database: <%= File.basename(File.expand_path('../..', __FILE__)).split('.').first %>_production
   username: deploy
-  password: <%= ENV['TYE_DATABASE_PASSWORD'] %>
+  password:

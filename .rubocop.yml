@@ -1,0 +1,103 @@
+---
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 3.0.0
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+Layout/HashAlignment:
+  Enabled: true
+Layout/LineLength:
+  Enabled: false
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+Lint/EmptyWhen:
+  Enabled: false
+Lint/RaiseException:
+  Enabled: true
+Lint/RedundantCopDisableDirective:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Lint/UselessAssignment:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/ParameterLists:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Naming/AccessorMethodName:
+  Enabled: false
+Naming/MethodParameterName:
+  Enabled: false
+Naming/VariableNumber:
+  Enabled: false
+Rails/BulkChangeTable:
+  Enabled: false
+Rails/CreateTableWithTimestamps:
+  Enabled: false
+Rails/NotNullColumn:
+  Enabled: false
+Rails/SkipsModelValidations:
+  Enabled: false
+Style/CaseLikeIf:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/CommentedKeyword:
+  Enabled: false
+Style/DocumentDynamicEvalDefinition:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/ExplicitBlockArgument:
+  Enabled: false
+Style/ExponentialNotation:
+  Enabled: false
+Style/GuardClause:
+  Enabled: true
+Style/HashEachMethods:
+  Enabled: true
+Style/HashSyntax:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/RaiseArgs:
+  Enabled: false
+Style/RedundantBegin:
+  Enabled: false
+Style/Semicolon:
+  Enabled: false
+Style/SingleArgumentDig:
+  Enabled: false
+Style/StringLiterals:
+  Enabled: false
+Style/StructInheritance:
+  Enabled: false
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+require: rubocop-rails

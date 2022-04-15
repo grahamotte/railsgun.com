@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-ruby scripts/_setup.rb
-scripts/deploy

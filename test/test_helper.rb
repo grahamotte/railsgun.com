@@ -1,13 +1,29 @@
+# frozen_string_literal: true
+
 ENV['RAILS_ENV'] ||= 'test'
 require_relative "../config/environment"
 require "rails/test_help"
+require 'minitest/unit'
+require 'mocha/minitest'
+require 'webmock/minitest'
+
+WebMock.disable_net_connect!(allow_localhost: true)
+
+class Secrets
+  def method_missing(*, **)
+    'lol_no'
+  end
+
+  def respond_to_missing?
+    true
+  end
+end
 
 class ActiveSupport::TestCase
-  # Run tests in parallel with specified workers
-  parallelize(workers: :number_of_processors)
+  include FactoryBot::Syntax::Methods
 
-  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-  fixtures :all
-
-  # Add more helper methods to be used by all tests here...
+  setup do
+    Rails.application.credentials = Secrets.new
+    Rails.application.secrets = Secrets.new
+  end
 end
