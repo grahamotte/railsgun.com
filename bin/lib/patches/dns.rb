@@ -15,7 +15,7 @@ module Patches
           req(
             url: "https://api.cloudflare.com/client/v4/zones/#{cf_zone.dig('id')}",
             method: :delete,
-            headers: { Authorization: "Bearer #{cloudflare_token}", content_type: :json, accept: :json },
+            headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
           )
         end
 
@@ -23,7 +23,7 @@ module Patches
           url: "https://api.cloudflare.com/client/v4/zones",
           method: :post,
           payload: { name: host }.to_json,
-          headers: { Authorization: "Bearer #{cloudflare_token}", content_type: :json, accept: :json },
+          headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
         )
 
         dns_config.each do |record|
@@ -31,7 +31,7 @@ module Patches
             url: "https://api.cloudflare.com/client/v4/zones/#{cloudflare_zone.dig('result', 'id')}/dns_records",
             method: :post,
             payload: record.to_json,
-            headers: { Authorization: "Bearer #{cloudflare_token}", content_type: :json, accept: :json },
+            headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
           )
         end
 
@@ -55,7 +55,7 @@ module Patches
       def cf_zone
         req(
           url: "https://api.cloudflare.com/client/v4/zones",
-          headers: { Authorization: "Bearer #{cloudflare_token}", content_type: :json, accept: :json },
+          headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
         ).dig('result').find { |x| x['name'] == host }
       end
 
@@ -64,7 +64,7 @@ module Patches
 
         req(
           url: "https://api.cloudflare.com/client/v4/zones/#{cf_zone['id']}/dns_records",
-          headers: { Authorization: "Bearer #{cloudflare_token}", content_type: :json, accept: :json },
+          headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
         ).dig('result')
       end
     end

@@ -83,14 +83,6 @@ module Patches
         x
       end
 
-      def linode_token
-        @linode_token ||= File.read(File.expand_path('~/.config/secrets/linode_token')).chomp
-      end
-
-      def cloudflare_token
-        @cloudflare_token ||= File.read(File.expand_path('~/.config/secrets/cloudflare_token')).chomp
-      end
-
       def secrets_yml_path
         File.expand_path("~/.config/secrets/secrets.yml")
       end
@@ -110,7 +102,7 @@ module Patches
       def instance
         @instance ||= req(
           url: 'https://api.linode.com/v4/linode/instances',
-          headers: { Authorization: "Bearer #{linode_token}" },
+          headers: { Authorization: "Bearer #{Secrets.linode_token}" },
         ).dig('data').find { |i| i.dig('label') == host }
       end
 
@@ -126,7 +118,7 @@ module Patches
       end
 
       def linode_req(**params)
-        req(**params, headers: { Authorization: "Bearer #{linode_token}", content_type: :json })
+        req(**params, headers: { Authorization: "Bearer #{Secrets.linode_token}", content_type: :json })
       end
 
       def run_remote(cmd, *opts, just_status: false)
