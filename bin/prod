@@ -112,6 +112,10 @@ if prog == :log
   Patches::Base.run_remote("sudo journalctl -f --since '2 hours ago' -u #{arg.to_s.gsub('sd_', '')}") if arg&.to_s&.start_with?('sd_')
 end
 
+if prog == :ssh
+  system("ssh -t deploy@#{Patches::Base.ipv4}")
+end
+
 if prog == :console
   system("ssh -t deploy@#{Patches::Base.ipv4} \"#{Patches::Base.rails_prefix} rails console\"")
 end
