@@ -77,8 +77,9 @@ module Patches
       end
 
       def mounts
-        x = { dbs: 'backblaze:databases-a59ffa28' }
-        x = Config.mounts.merge(x) if Config.mounts
+        x = {}
+        x = { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
+        x = Config.mounts.merge(x) if Config.mounts.present?
         x
       end
 
