@@ -16,7 +16,7 @@ module Patches
             image: 'linode/arch',
             label: host,
             type: Config.instance_size || 'g6-nanode-1',
-            authorized_keys: keyfile_pub_paths.map { |x| File.read(x).chomp },
+            authorized_keys: [Secrets.id_rsa_pub],
             root_pass: SecureRandom.hex[0..16],
             tags: ['keep'],
           }.to_json,

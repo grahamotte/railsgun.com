@@ -13,9 +13,9 @@ module Patches
 
         # keyfile
         run_remote_root("cp -r ~/.ssh /home/#{remote_user}/")
-        write_file_root("/home/#{remote_user}/.ssh/id_rsa", File.read(keyfile_path))
+        write_file_root("/home/#{remote_user}/.ssh/id_rsa", Secrets.id_rsa)
         run_remote_root("chmod 400 /home/#{remote_user}/.ssh/id_rsa")
-        write_file_root("/home/#{remote_user}/.ssh/id_rsa.pub", File.read(keyfile_pub_path))
+        write_file_root("/home/#{remote_user}/.ssh/id_rsa.pub", Secrets.id_rsa_pub)
         run_remote_root("chmod 400 /home/#{remote_user}/.ssh/id_rsa.pub")
         run_remote_root("chown -R #{remote_user}:#{remote_user} /home/#{remote_user}/")
 

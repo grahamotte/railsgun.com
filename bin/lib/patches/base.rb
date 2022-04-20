@@ -102,22 +102,6 @@ module Patches
         "/home/#{remote_user}/config/rclone.conf"
       end
 
-      def keyfile_path
-        File.expand_path("~/.config/secrets/id_rsa")
-      end
-
-      def keyfile_pub_path
-        File.expand_path("~/.config/secrets/id_rsa.pub")
-      end
-
-      def keyfile_paths
-        [keyfile_path, File.expand_path("~/.ssh/id_rsa")]
-      end
-
-      def keyfile_pub_paths
-        [keyfile_pub_path, File.expand_path("~/.ssh/id_rsa.pub")]
-      end
-
       #
       # helpers
       #
@@ -169,7 +153,7 @@ module Patches
             code = wait_thr.value.to_i
           end
         else
-          Net::SSH.start(host, user, keys: keyfile_paths) do |s|
+          Net::SSH.start(host, user, keys: [Secrets.id_rsa_path]) do |s|
             s.open_channel do |channel|
               channel.exec(cmd) do
                 channel.on_data { |_, data| print data; text += data }

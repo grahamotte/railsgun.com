@@ -113,11 +113,11 @@ if prog == :log
 end
 
 if prog == :ssh
-  system("ssh -t deploy@#{Patches::Base.ipv4}")
+  system("ssh -i #{Secrets.id_rsa_path} -t deploy@#{Patches::Base.ipv4}")
 end
 
 if prog == :console
-  system("ssh -t deploy@#{Patches::Base.ipv4} \"#{Patches::Base.rails_prefix} rails console\"")
+  system("ssh -i #{Secrets.id_rsa_path} -t deploy@#{Patches::Base.ipv4} \"#{Patches::Base.rails_prefix} rails console\"")
 end
 
 if prog == :pry

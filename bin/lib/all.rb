@@ -14,6 +14,7 @@ Bundler.require(:deploy)
 
 require_relative 'patches/base'
 require_relative 'config'
+require_relative 'secrets'
 File
   .dirname(__FILE__)
   .then { |x| File.join(x, 'patches/*.rb') }
@@ -23,6 +24,18 @@ File
 #
 # core extensions
 #
+
+def recursive_ostruct(object)
+  case object
+  when Hash
+    hash = {}; object.each { |k, v| hash[k] = recursive_ostruct(v) }
+    OpenStruct.new(hash)
+  when Array
+    object.map { |e| recursive_ostruct(e) }
+  else
+    object
+  end
+end
 
 class Object
   def blank?
