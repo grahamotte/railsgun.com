@@ -25,5 +25,6 @@ class ActiveSupport::TestCase
   setup do
     Rails.application.credentials = Secrets.new
     Rails.application.secrets = Secrets.new
+    Rails.cache.clear
   end
 end
