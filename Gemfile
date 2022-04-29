@@ -59,5 +59,6 @@ group :development, :test do
   gem 'foreman'
   gem 'listen'
   gem 'mocha'
+  gem 'qprof'
   gem 'webmock'
 end
