@@ -2,59 +2,64 @@ module Patches
   class InstallRclone < Base
     class << self
       def needed?
+        Secrets.reload!
+
         return true unless installed?('rclone')
         return true unless files_same?("/etc/fuse.conf", fuse_conf)
-        return true unless files_same?(remote_rclone_conf_path, File.read(rclone_conf_path))
+        return true unless configs_same?
 
         false
       end
 
       def apply
-        # installing deps
-        run_remote("#{yay_prefix} -S rclone rsync fuse2")
+        Secrets.reload!
 
-        # writing fuse conf
-        write_file("/etc/fuse.conf", fuse_conf)
+        subsection('fuse') do
+          run_remote("#{yay_prefix} -S fuse2")
+          write_file("/etc/fuse.conf", fuse_conf)
+        end
 
-        # paths
-        remote_rc_path = remote_rclone_conf_path
-        tmp_rc_path = "#{local_dir}/tmp/rclone_remote.conf"
-        local_rc_path = rclone_conf_path
-        run_remote("mkdir -p #{File.dirname(remote_rclone_conf_path)}")
+        subsection('rclone') do
+          run_remote("#{yay_prefix} -S rclone")
+          run_remote("mkdir -p #{File.dirname(remote_rclone_conf_path)}")
+          run_remote("sudo touch #{remote_rclone_conf_path}")
+          run_remote("sudo chown #{remote_user}:#{remote_user} #{remote_rclone_conf_path}")
+          write_file(remote_rclone_conf_path, local_config)
+        end
 
-        # set permissions
-        run_remote("mkdir -p #{File.dirname(remote_rclone_conf_path)}")
-        run_remote("sudo touch #{remote_rclone_conf_path}")
-        run_remote("sudo chown #{remote_user}:#{remote_user} #{remote_rclone_conf_path}")
-
-        # cache rclone updates
-        run_local("touch #{tmp_rc_path}")
-        run_local("scp -i #{Secrets.id_rsa_path} #{remote_user}@#{ipv4}:#{remote_rc_path} #{tmp_rc_path} || true")
-
-        # setup files
-        run_local("mkdir -p #{File.dirname(local_rc_path)}")
-        run_local("touch #{local_rc_path}")
-        run_remote("mkdir -p #{File.dirname(remote_rc_path)}")
-        run_remote("touch #{remote_rc_path}")
-
-        # update rclone conf everywhere
-        local_rc = ParseConfig.new(local_rc_path)
-        remote_rc = ParseConfig.new(tmp_rc_path)
-        if local_rc['dropbox']
-          local_db_token = JSON.parse(local_rc['dropbox']['token']) rescue { 'expiry' => Time.at(0).iso8601 } # rubocop:disable Style/RescueModifier
-          remote_db_token = JSON.parse(remote_rc['dropbox']['token']) rescue { 'expiry' => Time.at(0).iso8601 } # rubocop:disable Style/RescueModifier
-          if Time.parse(local_db_token['expiry']) > Time.parse(remote_db_token['expiry'])
-            local_rc.add_to_group('dropbox', 'token', local_db_token.to_json)
-          else
-            local_rc.add_to_group('dropbox', 'token', remote_db_token.to_json)
+        if Secrets.rclone.dig('dropbox').present?
+          subsection('dropbox') do
+            local_dropbox_token = Secrets.rclone['dropbox']['token']
+            remote_dropbox_token = with_tmp_file(remote_config) { |x| ParseConfig.new(x)['dropbox']['token'] }
+            if local_dropbox_token || remote_dropbox_token
+              newest_token = dropbox_token_expiry(local_dropbox_token) > dropbox_token_expiry(remote_dropbox_token) ? local_dropbox_token : remote_dropbox_token
+              Secrets.all['rclone']['dropbox']['token'] = newest_token
+              Secrets.save!
+              write_file(remote_rclone_conf_path, Secrets.rclone_config)
+            end
           end
         end
-        f = File.open(local_rc_path, 'w'); local_rc.write(f, false); f.close
-        write_file(remote_rc_path, File.read(local_rc_path))
-        run_local("rm #{tmp_rc_path}")
       end
 
-      # ---
+      def configs_same?
+        local_config.split("\n").select(&:present?) == remote_config.split("\n").select(&:present?)
+      end
+
+      def local_config
+        Secrets.rclone_config.to_s
+      end
+
+      def remote_config
+        run_remote("cat #{remote_rclone_conf_path}")
+      rescue StandardError
+        ""
+      end
+
+      def dropbox_token_expiry(token)
+        return Time.at(0) if token.blank?
+
+        JSON.parse(token).dig('expiry').then { |x| Time.parse(x) }
+      end
 
       def fuse_conf
         <<~TEXT

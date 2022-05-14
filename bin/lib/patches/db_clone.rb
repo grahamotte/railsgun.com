@@ -14,7 +14,7 @@ module Patches
         end
 
         subsection('saving prod db to local dev env') do
-          run_local("rsync -av #{remote_user}@#{ipv4}:~/#{project}_production.sql #{local_dir}/tmp/#{project}_production.sql")
+          run_local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{remote_user}@#{ipv4}:~/#{project}_production.sql #{local_dir}/tmp/#{project}_production.sql")
           run_remote("rm -f ~/#{project}_production.sql")
           run_local("psql #{project}_development < #{local_dir}/tmp/#{project}_production.sql")
         end

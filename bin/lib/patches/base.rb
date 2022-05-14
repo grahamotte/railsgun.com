@@ -262,6 +262,15 @@ module Patches
         File.open(path, 'w+') { |f| f << data; f << "\n" }
       end
 
+      def with_tmp_file(data = "")
+        path = File.expand_path(File.join(local_dir, 'tmp', SecureRandom.hex(16)))
+        run_local("touch #{path}")
+        File.open(path, 'w+') { |f| f << data } if data.present?
+        result = yield(path)
+        run_local("rm #{path}")
+        result
+      end
+
       def write_file(path, data)
         # do nothing if the files are the same
         return if files_same?(path, data)

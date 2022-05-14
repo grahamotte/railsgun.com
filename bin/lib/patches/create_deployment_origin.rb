@@ -20,7 +20,7 @@ module Patches
         # create origin and push current
         run_remote("#{yay_prefix} -S rsync") unless installed?('rsync')
         run_local("git clone --bare #{local_dir} #{local_dir}/tmp/#{host}.git")
-        run_local("rsync -av #{local_dir}/tmp/#{host}.git/ #{remote_user}@#{ipv4}:#{remote_origin_dir}/")
+        run_local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{local_dir}/tmp/#{host}.git/ #{remote_user}@#{ipv4}:#{remote_origin_dir}/")
 
         # cleanup
         run_local("rm -rf #{local_dir}/tmp/#{host}.git")

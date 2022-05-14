@@ -16,6 +16,27 @@ class Secrets
       { "production" => all, "development" => all }.to_yaml
     end
 
+    def save!
+      raise 'no secrets!' if all.blank? || @all.blank? # pre-loads all
+      File.open(path, 'w+') { |f| f << all.to_yaml }
+    end
+
+    def reload!
+      @all = nil
+      all
+    end
+
+    def rclone_config
+      return if rclone.blank?
+
+      rclone.map do |k1, v1|
+        <<~TEXT
+          [#{k1}]
+          #{v1.map { |k2, v2| "#{k2} = #{v2}" }.join("\n")}
+        TEXT
+      end.join("\n")
+    end
+
     def id_rsa_path
       @id_rsa_path ||= begin
         p = File.join(File.dirname(File.dirname(__dir__)), 'tmp/id_rsa')
