@@ -35,7 +35,7 @@ gem 'xmlrpc'
 
 group :default, :deploy, :development, :test do
   gem 'json'
-  gem 'net-ssh', git: 'https://github.com/net-ssh/net-ssh.git', ref: 'a45f54fe1de434605af0b7195dd9a91bccd2cec5'
+  gem 'net-ssh', '~> 7.0.0.beta1'
   gem 'parseconfig'
   gem 'pry'
   gem 'pry-remote'
