@@ -15,9 +15,9 @@ module Patches
 
       def apply
         # push to origin
-        run_local('git remote remove deployment', just_status: true)
-        run_local("git remote add deployment #{remote_user}@#{ipv4}:#{remote_origin_dir}/")
-        run_local('git push -f deployment master')
+        run_local("#{git_prefix} remote remove deployment", just_status: true)
+        run_local("#{git_prefix} remote add deployment #{remote_user}@#{ipv4}:#{remote_origin_dir}/")
+        run_local("#{git_prefix} push -f deployment master")
 
         # sync with origin
         run_remote('sudo mkdir -p /var/www')
@@ -29,6 +29,10 @@ module Patches
       end
 
       # ---
+
+      def git_prefix
+        "GIT_SSH_COMMAND='ssh -i #{Secrets.id_rsa_path}' git"
+      end
 
       def remote_origin_dir
         "/home/#{remote_user}/#{host}.git"
