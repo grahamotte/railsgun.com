@@ -50,6 +50,7 @@ def full_deploy
   Patches::Redis.call
   Patches::RailsAssets.call
   Patches::Rails.call
+  Patches::Swapoff.call
   Config::Patch.call
 end
 
