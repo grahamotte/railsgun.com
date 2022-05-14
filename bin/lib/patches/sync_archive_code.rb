@@ -13,12 +13,8 @@ module Patches
 
       # ---
 
-      def account
-        'grahamotte'
-      end
-
       def archive_repo
-        "git@github.com:#{account}/#{host}.git"
+        "git@github.com:#{Secrets.github_account}/#{host}.git"
       end
     end
   end

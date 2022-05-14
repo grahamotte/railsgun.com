@@ -49,7 +49,7 @@ module Patches
       #
 
       def remote_user
-        'deploy'
+        Secrets.deployment_username
       end
 
       def remote_pass
@@ -81,10 +81,6 @@ module Patches
         x = { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
         x = Config.mounts.merge(x) if Config.mounts.present?
         x
-      end
-
-      def secrets_yml_path
-        File.expand_path("~/.config/secrets/secrets.yml")
       end
 
       def rclone_conf_path
@@ -261,6 +257,11 @@ module Patches
         end
       end
 
+      def write_file_local(path, data)
+        run_local("rm #{path}")
+        File.open(path, 'w+') { |f| f << data; f << "\n" }
+      end
+
       def write_file(path, data)
         # do nothing if the files are the same
         return if files_same?(path, data)
@@ -275,7 +276,7 @@ module Patches
         remote_tmp_file = '/tmp/uploaded_file'
 
         # copy over file
-        File.open(local_tmp_file, 'w+') { |f| f << data; f << "\n" }
+        write_file_local(local_tmp_file, data)
         run_local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{remote_user}@#{ipv4}:#{remote_tmp_file}")
         run_remote("sudo cp #{remote_tmp_file} #{path}")
       end

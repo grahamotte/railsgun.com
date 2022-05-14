@@ -4,11 +4,16 @@ class Secrets
       all[m.to_s]
     end
 
+    def path
+      File.expand_path("~/.config/secrets/secrets.yml")
+    end
+
     def all
-      @all ||= File
-        .expand_path("~/.config/secrets/secrets.yml")
-        .then { |x| YAML.load_file(x) }
-        .dig('production')
+      @all ||= YAML.load_file(path)
+    end
+
+    def all_rails_formatted
+      { "production" => all, "development" => all }.to_yaml
     end
 
     def id_rsa_path
