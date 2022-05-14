@@ -106,7 +106,7 @@ module Patches
       end
 
       def remote_rclone_conf_path
-        "/home/#{remote_user}/config/rclone.conf"
+        "/home/#{remote_user}/.config/rclone/rclone.conf"
       end
 
       #
