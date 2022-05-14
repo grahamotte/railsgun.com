@@ -276,7 +276,7 @@ module Patches
 
         # copy over file
         File.open(local_tmp_file, 'w+') { |f| f << data; f << "\n" }
-        run_local("scp #{local_tmp_file} #{remote_user}@#{ipv4}:#{remote_tmp_file}")
+        run_local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{remote_user}@#{ipv4}:#{remote_tmp_file}")
         run_remote("sudo cp #{remote_tmp_file} #{path}")
       end
     end

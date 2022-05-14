@@ -29,7 +29,7 @@ module Patches
 
         # cache rclone updates
         run_local("touch #{tmp_rc_path}")
-        run_local("scp #{remote_user}@#{ipv4}:#{remote_rc_path} #{tmp_rc_path} || true")
+        run_local("scp -i #{Secrets.id_rsa_path} #{remote_user}@#{ipv4}:#{remote_rc_path} #{tmp_rc_path} || true")
 
         # setup files
         run_local("mkdir -p #{File.dirname(local_rc_path)}")

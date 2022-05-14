@@ -39,7 +39,7 @@ module Patches
         remote_tmp_file = '/tmp/root_uploaded_file'
 
         File.open(local_tmp_file, 'w+') { |f| f << data; f << "\n" }
-        run_local("scp #{local_tmp_file} root@#{ipv4}:#{remote_tmp_file}")
+        run_local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} root@#{ipv4}:#{remote_tmp_file}")
         run_remote_root("cp #{remote_tmp_file} #{path}")
       end
 
