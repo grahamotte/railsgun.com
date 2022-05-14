@@ -49,7 +49,7 @@ module Patches
       #
 
       def remote_user
-        Secrets.deployment_username
+        Config.deployment_username || 'deploy'
       end
 
       def remote_pass

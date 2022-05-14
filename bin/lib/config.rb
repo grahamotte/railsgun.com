@@ -1,5 +1,8 @@
 class Config
   class << self
+    def deployment_username
+    end
+
     def instance_region
     end
 
