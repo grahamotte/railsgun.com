@@ -257,8 +257,12 @@ module Patches
         end
       end
 
+      def text_same?(a, b)
+        a.to_s.split("\n").select(&:present?) == b.to_s.split("\n").select(&:present?)
+      end
+
       def write_file_local(path, data)
-        run_local("rm #{path}")
+        run_local("rm -f #{path}")
         File.open(path, 'w+') { |f| f << data; f << "\n" }
       end
 

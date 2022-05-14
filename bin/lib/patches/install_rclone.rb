@@ -6,7 +6,7 @@ module Patches
 
         return true unless installed?('rclone')
         return true unless files_same?("/etc/fuse.conf", fuse_conf)
-        return true unless configs_same?
+        return true unless text_same?(local_config, remote_config)
 
         false
       end
@@ -39,10 +39,6 @@ module Patches
             end
           end
         end
-      end
-
-      def configs_same?
-        local_config.split("\n").select(&:present?) == remote_config.split("\n").select(&:present?)
       end
 
       def local_config
