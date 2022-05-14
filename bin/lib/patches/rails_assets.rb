@@ -7,7 +7,7 @@ module Patches
 
       def apply
         subsection('bundle') do
-          run_remote("cd #{remote_dir}; #{asdf_exec} bundle install")
+          run_remote("cd #{remote_dir}; #{asdf_exec_prefix} bundle install")
         end
 
         subsection('precompile assets') do

@@ -40,6 +40,18 @@ module Patches
         raise 'implement apply'
       end
 
+      def section(name)
+        puts "*** #{name}..."
+        yield if block_given?
+        puts
+      end
+
+      def subsection(name)
+        puts "--- #{name}..."
+        yield if block_given?
+        puts
+      end
+
       def pry
         binding.pry
       end
@@ -81,6 +93,12 @@ module Patches
         x = { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
         x = Config.mounts.merge(x) if Config.mounts.present?
         x
+      end
+
+      def subdomains
+        doms = %w[www gf sq]
+        doms += Config.subdomains if Config.subdomains
+        doms.map { |x| "#{x}.#{host}" }.unshift(host)
       end
 
       def rclone_conf_path
@@ -169,29 +187,11 @@ module Patches
         false
       end
 
-      def section(name)
-        puts "*** #{name}..."
-        yield if block_given?
-        puts
-      end
-
-      def subsection(name)
-        puts "--- #{name}..."
-        yield if block_given?
-        puts
-      end
-
-      def subdomains
-        doms = %w[www gf sq]
-        doms += Config.subdomains if Config.subdomains
-        doms.map { |x| "#{x}.#{host}" }.unshift(host)
-      end
-
       def asdf_prefix
         '. /opt/asdf-vm/asdf.sh; asdf'
       end
 
-      def asdf_exec
+      def asdf_exec_prefix
         '. /opt/asdf-vm/asdf.sh; asdf exec'
       end
 
@@ -207,7 +207,7 @@ module Patches
           queue: '*',
         }.map { |k, v| "export #{k.to_s.upcase}=#{v}" }.join('; ')
 
-        "cd #{remote_dir}; #{env}; #{asdf_exec} bundle exec"
+        "cd #{remote_dir}; #{env}; #{asdf_exec_prefix} bundle exec"
       end
 
       def influx_token
