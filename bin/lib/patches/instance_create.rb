@@ -12,13 +12,12 @@ module Patches
           method: :post,
           url: 'https://api.linode.com/v4/linode/instances',
           payload: {
-            region: Config.instance_region || 'us-west',
+            region: instance_region,
             image: 'linode/arch',
             label: host,
-            type: Config.instance_size || 'g6-nanode-1',
+            type: instance_size,
             authorized_keys: [Secrets.id_rsa_pub],
-            root_pass: SecureRandom.hex[0..16],
-            tags: ['keep'],
+            root_pass: root_pass,
           }.to_json,
         )
 

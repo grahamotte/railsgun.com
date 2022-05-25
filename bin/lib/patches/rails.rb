@@ -71,7 +71,7 @@ development:
           [Service]
           User=#{remote_user}
           Type=simple
-          ExecStart=bash -c \"#{rails_prefix} sidekiq -c #{Config.job_concurrency || 3} | tee #{remote_dir}/log/sidekiq.log\"
+          ExecStart=bash -c \"#{rails_prefix} sidekiq -c #{job_concurrency} | tee #{remote_dir}/log/sidekiq.log\"
           Restart=always
 
           [Install]

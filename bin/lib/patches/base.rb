@@ -20,8 +20,8 @@ module Patches
           apply
         else
           should_run = false
-          section("checking if needed") { should_run = needed? }
-          section("applying patch") { apply } if should_run
+          section("checking") { should_run = needed? }
+          section("applying") { apply } if should_run
         end
 
         puts
@@ -40,31 +40,23 @@ module Patches
         raise 'implement apply'
       end
 
-      def section(name)
-        puts "*** #{name}..."
-        yield if block_given?
-        puts
-      end
-
-      def subsection(name)
-        puts "--- #{name}..."
-        yield if block_given?
-        puts
-      end
-
       def pry
         binding.pry
       end
 
       #
-      # variables
+      # "constants"
       #
 
       def remote_user
         Config.deployment_username || 'deploy'
       end
 
-      def remote_pass
+      def remote_pass # if you're using these, you're doing something wrong
+        SecureRandom.hex(16)
+      end
+
+      def root_pass
         SecureRandom.hex(16)
       end
 
@@ -101,6 +93,18 @@ module Patches
         doms.map { |x| "#{x}.#{host}" }.unshift(host)
       end
 
+      def job_concurrency
+        Config.job_concurrency || 3
+      end
+
+      def instance_size
+        Config.instance_size || 'g6-nanode-1'
+      end
+
+      def instance_region
+        Config.instance_region || 'us-west'
+      end
+
       def rclone_conf_path
         File.expand_path("~/.config/secrets/rclone.conf")
       end
@@ -109,15 +113,65 @@ module Patches
         "/home/#{remote_user}/.config/rclone/rclone.conf"
       end
 
-      #
-      # helpers
-      #
-
       def instance
         @instance ||= req(
           url: 'https://api.linode.com/v4/linode/instances',
           headers: { Authorization: "Bearer #{Secrets.linode_token}" },
         ).dig('data').find { |i| i.dig('label') == host }
+      end
+
+      def asdf_prefix
+        '. /opt/asdf-vm/asdf.sh; asdf'
+      end
+
+      def asdf_exec_prefix
+        '. /opt/asdf-vm/asdf.sh; asdf exec'
+      end
+
+      def yay_prefix
+        'yay --nodiffmenu --noeditmenu --nouseask --nocleanmenu --noupgrademenu --noconfirm'
+      end
+
+      def rails_prefix
+        env = {
+          rails_env: :production,
+          rails_max_threads: 32,
+          malloc_arena_max: 2,
+          queue: '*',
+        }.map { |k, v| "export #{k.to_s.upcase}=#{v}" }.join('; ')
+
+        "cd #{remote_dir}; #{env}; #{asdf_exec_prefix} bundle exec"
+      end
+
+      def influx_token
+        @influx_token ||= run_remote('influx auth list --json | grep token')
+          .then { |x| JSON.parse("{#{x.gsub(',', '')}}") }
+          .dig('token')
+      end
+
+      def tool_versions
+        [local_dir, remote_dir]
+          .find { |x| Dir.exist?(x) }
+          .then { |x| File.join(x, '.tool-versions') }
+          .then { |x| File.readlines(x) }
+          .map(&:split)
+          .to_h
+      end
+
+      #
+      # helpers
+      #
+
+      def section(name)
+        puts "*** #{name}..."
+        yield if block_given?
+        puts
+      end
+
+      def subsection(name)
+        puts "--- #{name}..."
+        yield if block_given?
+        puts
       end
 
       def req(**params)
@@ -187,46 +241,8 @@ module Patches
         false
       end
 
-      def asdf_prefix
-        '. /opt/asdf-vm/asdf.sh; asdf'
-      end
-
-      def asdf_exec_prefix
-        '. /opt/asdf-vm/asdf.sh; asdf exec'
-      end
-
-      def yay_prefix
-        'yay --nodiffmenu --noeditmenu --nouseask --nocleanmenu --noupgrademenu --noconfirm'
-      end
-
-      def rails_prefix
-        env = {
-          rails_env: :production,
-          rails_max_threads: 32,
-          malloc_arena_max: 2,
-          queue: '*',
-        }.map { |k, v| "export #{k.to_s.upcase}=#{v}" }.join('; ')
-
-        "cd #{remote_dir}; #{env}; #{asdf_exec_prefix} bundle exec"
-      end
-
-      def influx_token
-        @influx_token ||= run_remote('influx auth list --json | grep token')
-          .then { |x| JSON.parse("{#{x.gsub(',', '')}}") }
-          .dig('token')
-      end
-
       def installed?(program)
         run_remote("command -v #{program}", just_status: true)
-      end
-
-      def tool_versions
-        [local_dir, remote_dir]
-          .find { |x| Dir.exist?(x) }
-          .then { |x| File.join(x, '.tool-versions') }
-          .then { |x| File.readlines(x) }
-          .map(&:split)
-          .to_h
       end
 
       def service_running?(service)

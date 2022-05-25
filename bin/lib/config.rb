@@ -1,21 +1,21 @@
 class Config
   class << self
-    def deployment_username
+    def deployment_username # deploy
     end
 
-    def instance_region
+    def instance_region # us-west
     end
 
-    def instance_size
+    def instance_size # g6-nanode-1
     end
 
-    def subdomains
+    def subdomains # ['www', 'gf', 'sq']
     end
 
-    def job_concurrency
+    def job_concurrency # 3
     end
 
-    def mounts
+    def mounts # { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
     end
   end
 
