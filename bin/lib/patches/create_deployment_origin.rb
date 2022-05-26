@@ -14,22 +14,22 @@ module Patches
         Utils.run_local("ssh-keyscan -H #{Instance.ipv4} >> ~/.ssh/known_hosts", just_status: true)
 
         # clear dirs
-        Utils.run_local("rm -rf #{local_dir}/tmp/#{host}.git")
+        Utils.run_local("rm -rf #{local_dir}/tmp/#{Utils.domain_name}.git")
         Utils.run_remote("rm -rf #{remote_origin_dir}")
 
         # create origin and push current
         Utils.run_remote("#{yay_prefix} -S rsync") unless installed?('rsync')
-        Utils.run_local("git clone --bare #{local_dir} #{local_dir}/tmp/#{host}.git")
-        Utils.run_local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{local_dir}/tmp/#{host}.git/ #{Instance.username}@#{Instance.ipv4}:#{remote_origin_dir}/")
+        Utils.run_local("git clone --bare #{local_dir} #{local_dir}/tmp/#{Utils.domain_name}.git")
+        Utils.run_local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{local_dir}/tmp/#{Utils.domain_name}.git/ #{Instance.username}@#{Instance.ipv4}:#{remote_origin_dir}/")
 
         # cleanup
-        Utils.run_local("rm -rf #{local_dir}/tmp/#{host}.git")
+        Utils.run_local("rm -rf #{local_dir}/tmp/#{Utils.domain_name}.git")
       end
 
       # ---
 
       def remote_origin_dir
-        "/home/#{Instance.username}/#{host}.git"
+        "/home/#{Instance.username}/#{Utils.domain_name}.git"
       end
 
       def remote_origin_exists?

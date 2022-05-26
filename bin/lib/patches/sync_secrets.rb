@@ -12,7 +12,7 @@ module Patches
       def apply
         Utils.run_remote('sudo mkdir -p /var/www')
         Utils.run_remote('sudo chown -R deploy:deploy /var/www')
-        Utils.run_remote("mkdir -p /var/www/#{host}/config")
+        Utils.run_remote("mkdir -p /var/www/#{Utils.domain_name}/config")
         write_file(remote_rails_path, Secrets.all_rails_formatted)
 
         write_file_local("#{local_rails_path}", Secrets.all_rails_formatted)

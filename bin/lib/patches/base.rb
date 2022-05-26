@@ -35,12 +35,8 @@ module Patches
       # "constants"
       #
 
-      def host
-        File.basename(local_dir)
-      end
-
       def project
-        host.split('.').first
+        Utils.domain_name.split('.').first
       end
 
       def local_dir
@@ -48,7 +44,7 @@ module Patches
       end
 
       def remote_dir
-        "/var/www/#{host}"
+        "/var/www/#{Utils.domain_name}"
       end
 
       def mounts
@@ -64,8 +60,8 @@ module Patches
           .compact
           .push('www', 'gf', 'sq')
           .uniq
-          .map { |x| "#{x}.#{host}" }
-          .unshift(host)
+          .map { |x| "#{x}.#{Utils.domain_name}" }
+          .unshift(Utils.domain_name)
       end
 
       def job_concurrency

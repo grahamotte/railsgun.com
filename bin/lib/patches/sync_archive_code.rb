@@ -14,7 +14,7 @@ module Patches
       # ---
 
       def archive_repo
-        "git@github.com:#{Secrets.github_account}/#{host}.git"
+        "git@github.com:#{Secrets.github_account}/#{Utils.domain_name}.git"
       end
     end
   end

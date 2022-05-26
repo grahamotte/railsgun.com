@@ -8,7 +8,7 @@ module Instances
       def show
         req(method: :get, url: 'https://api.linode.com/v4/linode/instances')
           .dig(:data)
-          .find { |i| i.dig(:label) == Instance.host }
+          .find { |i| i.dig(:label) == Utils.domain_name }
       end
 
       def create
@@ -18,7 +18,7 @@ module Instances
           payload: {
             region: Instance.region,
             image: Instance.image,
-            label: Instance.host,
+            label: Utils.domain_name,
             type: Instance.size,
             authorized_keys: [Instance.id_rsa_pub],
             root_pass: Instance.password,

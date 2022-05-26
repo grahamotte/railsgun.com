@@ -46,10 +46,6 @@ class Instance
       Config.deployment_image
     end
 
-    def host
-      File.basename(File.dirname(File.dirname(__dir__)))
-    end
-
     def username
       Config.instance_username
     end

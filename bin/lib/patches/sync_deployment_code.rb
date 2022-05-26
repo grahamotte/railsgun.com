@@ -34,7 +34,7 @@ module Patches
       end
 
       def remote_origin_dir
-        "/home/#{Instance.username}/#{host}.git"
+        "/home/#{Instance.username}/#{Utils.domain_name}.git"
       end
 
       def remote_dir_exists?

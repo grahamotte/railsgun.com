@@ -41,16 +41,16 @@ module Patches
             server {
               listen 80;
               listen [::]:80;
-              server_name #{host};
+              server_name #{Utils.domain_name};
               return 301 https://$server_name$request_uri;
             }
 
             server {
-              server_name #{host};
+              server_name #{Utils.domain_name};
               listen 443 ssl http2;
               include /etc/letsencrypt/options-ssl-nginx.conf;
-              ssl_certificate /etc/letsencrypt/live/#{host}/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/#{host}/privkey.pem;
+              ssl_certificate /etc/letsencrypt/live/#{Utils.domain_name}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/#{Utils.domain_name}/privkey.pem;
               ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
               ssl_stapling on;
               ssl_stapling_verify on;
@@ -92,11 +92,11 @@ module Patches
             }
 
             server {
-              server_name gf.#{host};
+              server_name gf.#{Utils.domain_name};
               listen 443 ssl http2;
               include /etc/letsencrypt/options-ssl-nginx.conf;
-              ssl_certificate /etc/letsencrypt/live/#{host}/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/#{host}/privkey.pem;
+              ssl_certificate /etc/letsencrypt/live/#{Utils.domain_name}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/#{Utils.domain_name}/privkey.pem;
               ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
               ssl_stapling on;
               ssl_stapling_verify on;
@@ -112,11 +112,11 @@ module Patches
             }
 
             server {
-              server_name pl.#{host};
+              server_name pl.#{Utils.domain_name};
               listen 443 ssl http2;
               include /etc/letsencrypt/options-ssl-nginx.conf;
-              ssl_certificate /etc/letsencrypt/live/#{host}/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/#{host}/privkey.pem;
+              ssl_certificate /etc/letsencrypt/live/#{Utils.domain_name}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/#{Utils.domain_name}/privkey.pem;
               ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
               ssl_stapling on;
               ssl_stapling_verify on;
@@ -132,11 +132,11 @@ module Patches
             }
 
             server {
-              server_name sq.#{host};
+              server_name sq.#{Utils.domain_name};
               listen 443 ssl http2;
               include /etc/letsencrypt/options-ssl-nginx.conf;
-              ssl_certificate /etc/letsencrypt/live/#{host}/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/#{host}/privkey.pem;
+              ssl_certificate /etc/letsencrypt/live/#{Utils.domain_name}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/#{Utils.domain_name}/privkey.pem;
               ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
               ssl_stapling on;
               ssl_stapling_verify on;
