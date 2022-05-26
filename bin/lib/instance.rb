@@ -43,7 +43,7 @@ class Instance
     end
 
     def image
-      Config.deployment_image
+      Config.instance_image
     end
 
     def username
