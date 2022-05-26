@@ -76,9 +76,13 @@ module Patches
       end
 
       def subdomains
-        doms = %w[www gf sq]
-        doms += Config.subdomains if Config.subdomains
-        doms.map { |x| "#{x}.#{host}" }.unshift(host)
+        Array
+          .wrap(Config.subdomains)
+          .compact
+          .push('www', 'gf', 'sq')
+          .uniq
+          .map { |x| "#{x}.#{host}" }
+          .unshift(host)
       end
 
       def job_concurrency
