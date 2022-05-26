@@ -11,17 +11,10 @@ class AuthorizedController < ApplicationController
 
   def current_user
     @current_user ||= begin
-      ht = request.headers['Authorization']&.split&.last
-      hu = JwtAuthorizer.find_user(ht)
-      st = session[:jwt]
-      su = JwtAuthorizer.find_user(st)
+      token = session[:jwt] || request.headers['Authorization']&.split&.last
+      session[:jwt] ||= token
 
-      if hu.present?
-        session[:jwt] = ht
-        hu
-      elsif su
-        su
-      end
+      JwtAuthorizer.find_user(token)
     end
   end
 end

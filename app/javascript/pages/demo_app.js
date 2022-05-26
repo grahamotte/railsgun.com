@@ -37,7 +37,7 @@ export default () => {
     );
 
     return () => cable.disconnect();
-  }, []);
+  }, [loggedIn]);
 
   const loginContent = (
     <>
@@ -88,26 +88,20 @@ export default () => {
 
   const showContent = (
     <>
-      <button
-        type="button"
-        className="btn btn-primary mb-3"
-        onClick={() => {
-          logout().then(() => {
-            setLoggedIn(false);
-            setLoginError(false);
-            setLoaded(false);
-            setData({});
-          });
-        }}
-      >
-        Logout
-      </button>
-
-      {Object.keys(data).map((k) => {
+      {Object.keys(data).map((cat) => {
         return (
-          <div key={k} className="row">
-            <div className="col-3 fw-bold">{k}</div>
-            <div className="col">{data[k]}</div>
+          <div key={cat} className="shadow p-3 mb-2 bg-body rounded">
+            <h6>{cat}</h6>
+            {Object.keys(data[cat]).map((key) => {
+              return (
+                <div key={`${cat}${key}`} className="row">
+                  <div className="col-4 fw-bold overflow-hidden text-end">
+                    {key}
+                  </div>
+                  <div className="col overflow-hidden">{data[cat][key]}</div>
+                </div>
+              );
+            })}
           </div>
         );
       })}
@@ -115,17 +109,49 @@ export default () => {
   );
 
   return (
-    <div className="container mt-5 mb-5 font-monospace">
-      <h1 className="fst-italic fw-bold mb-0">RAILSGUN</h1>
-
-      <div className="text-muted mb-3" style={{ fontSize: "0.75em" }}>
-        {dad}
+    <div
+      className="container mt-5 mb-5 font-monospace"
+      style={{ fontSize: "0.75em" }}
+    >
+      <div className="row mb-3">
+        <div className="col-10">
+          <h1 className="fst-italic fw-bold mb-0">RAILSGUN</h1>
+          <div className="text-muted">{dad}</div>
+        </div>
+        <div className="col text-end align-self-end">
+          {loggedIn && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                logout().then(() => {
+                  setLoggedIn(false);
+                  setLoginError(false);
+                  setLoaded(false);
+                  setData({});
+                });
+              }}
+            >
+              Logout
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="shadow p-3 mb-5 bg-body rounded">
-        {loginError && <div className="alert alert-danger">LOL nope.</div>}
-        {loggedIn ? showContent : loginContent}
-      </div>
+      {loggedIn ? (
+        showContent
+      ) : (
+        <div className="row">
+          <div className="col-lg-6">
+            <div className="shadow p-3 mb-5 bg-body rounded">
+              {loginError && (
+                <div className="alert alert-danger">LOL nope.</div>
+              )}
+              {loginContent}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
