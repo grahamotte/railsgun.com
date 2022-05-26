@@ -1,21 +1,35 @@
 class Config
   class << self
-    def deployment_username # deploy
+    def instance_username
+      'deploy'
     end
 
-    def instance_region # us-west
+    def instance_class
+      Instances::Linode
     end
 
-    def instance_size # g6-nanode-1
+    def instance_region
+      'us-west'
     end
 
-    def subdomains # ['www', 'gf', 'sq']
+    def instance_size
+      'g6-nanode-1'
     end
 
-    def job_concurrency # 3
+    def instance_image
+      'linode/arch'
     end
 
-    def mounts # { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
+    def subdomains
+      ['www', 'gf', 'sq']
+    end
+
+    def job_concurrency
+      3
+    end
+
+    def mounts
+      { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
     end
   end
 

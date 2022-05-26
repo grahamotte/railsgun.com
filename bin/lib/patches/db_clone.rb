@@ -6,15 +6,15 @@ module Patches
       end
 
       def apply
-        return(puts('no instance.')) unless instance
+        return(puts('does not exist.')) unless Instance.exists?
 
         subsection('dumping db') do
           run_remote("rm -f ~/#{project}_production.sql")
-          run_remote("pg_dump -U #{remote_user} --clean #{project}_production > ~/#{project}_production.sql")
+          run_remote("pg_dump -U #{Instance.username} --clean #{project}_production > ~/#{project}_production.sql")
         end
 
         subsection('saving prod db to local dev env') do
-          run_local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{remote_user}@#{ipv4}:~/#{project}_production.sql #{local_dir}/tmp/#{project}_production.sql")
+          run_local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{Instance.username}@#{Instance.ipv4}:~/#{project}_production.sql #{local_dir}/tmp/#{project}_production.sql")
           run_remote("rm -f ~/#{project}_production.sql")
           run_local("psql #{project}_development < #{local_dir}/tmp/#{project}_production.sql")
         end

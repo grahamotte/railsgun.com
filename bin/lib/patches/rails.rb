@@ -51,7 +51,7 @@ development:
           After=network-online-target
 
           [Service]
-          User=#{remote_user}
+          User=#{Instance.username}
           Type=simple
           ExecStart=bash -c "#{rails_prefix} rails server"
           Restart=always
@@ -69,7 +69,7 @@ development:
           After=network-online-target
 
           [Service]
-          User=#{remote_user}
+          User=#{Instance.username}
           Type=simple
           ExecStart=bash -c \"#{rails_prefix} sidekiq -c #{job_concurrency} | tee #{remote_dir}/log/sidekiq.log\"
           Restart=always

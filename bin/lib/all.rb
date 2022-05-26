@@ -15,6 +15,8 @@ Bundler.require(:deploy)
 require_relative 'patches/base'
 require_relative 'config'
 require_relative 'secrets'
+require_relative 'instances/linode'
+require_relative 'instance'
 File
   .dirname(__FILE__)
   .then { |x| File.join(x, 'patches/*.rb') }

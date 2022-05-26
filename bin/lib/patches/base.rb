@@ -6,7 +6,7 @@ module Patches
       #
 
       def call
-        @instance = nil
+        Instance.reload
         pretty_name = name.split('::').last.underscore.gsub('_', ' ').titleize
         start_time = Time.now
 
@@ -48,14 +48,6 @@ module Patches
       # "constants"
       #
 
-      def remote_user
-        Config.deployment_username || 'deploy'
-      end
-
-      def remote_pass # if you're using these, you're doing something wrong
-        SecureRandom.hex(16)
-      end
-
       def root_pass
         SecureRandom.hex(16)
       end
@@ -66,10 +58,6 @@ module Patches
 
       def project
         host.split('.').first
-      end
-
-      def ipv4
-        instance.dig('ipv4').first
       end
 
       def local_dir
@@ -97,27 +85,12 @@ module Patches
         Config.job_concurrency || 3
       end
 
-      def instance_size
-        Config.instance_size || 'g6-nanode-1'
-      end
-
-      def instance_region
-        Config.instance_region || 'us-west'
-      end
-
       def rclone_conf_path
         File.expand_path("~/.config/secrets/rclone.conf")
       end
 
       def remote_rclone_conf_path
-        "/home/#{remote_user}/.config/rclone/rclone.conf"
-      end
-
-      def instance
-        @instance ||= req(
-          url: 'https://api.linode.com/v4/linode/instances',
-          headers: { Authorization: "Bearer #{Secrets.linode_token}" },
-        ).dig('data').find { |i| i.dig('label') == host }
+        "/home/#{Instance.username}/.config/rclone/rclone.conf"
       end
 
       def asdf_prefix
@@ -190,7 +163,7 @@ module Patches
       end
 
       def run_remote(cmd, *opts, just_status: false)
-        run(cmd, *opts, user: remote_user, host: ipv4, just_status: just_status)
+        run(cmd, *opts, user: Instance.username, host: Instance.ipv4, just_status: just_status)
       end
 
       def run_local(cmd, *opts, just_status: false)
@@ -306,7 +279,7 @@ module Patches
 
         # copy over file
         write_file_local(local_tmp_file, data)
-        run_local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{remote_user}@#{ipv4}:#{remote_tmp_file}")
+        run_local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{Instance.username}@#{Instance.ipv4}:#{remote_tmp_file}")
         run_remote("sudo cp #{remote_tmp_file} #{path}")
       end
     end

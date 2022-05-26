@@ -87,7 +87,7 @@ if prog == :db
 end
 
 if prog == :instance
-  Patches::InstanceShow.call if arg == :show
+  pp Instance.show if arg == :show
   Patches::InstanceCreate.call if arg == :create
   Patches::InstanceDestroy.call if arg == :destroy
 end
@@ -114,11 +114,11 @@ if prog == :log
 end
 
 if prog == :ssh
-  system("ssh -i #{Secrets.id_rsa_path} -t deploy@#{Patches::Base.ipv4}")
+  system("ssh -i #{Secrets.id_rsa_path} -t deploy@#{Instance.ipv4}")
 end
 
 if prog == :console
-  system("ssh -i #{Secrets.id_rsa_path} -t deploy@#{Patches::Base.ipv4} \"#{Patches::Base.rails_prefix} rails console\"")
+  system("ssh -i #{Secrets.id_rsa_path} -t deploy@#{Instance.ipv4} \"#{Patches::Base.rails_prefix} rails console\"")
 end
 
 if prog == :pry

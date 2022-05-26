@@ -19,7 +19,7 @@ module Patches
             run_remote("sudo systemctl daemon-reload")
             run_remote("sudo mkdir -p /mnt/#{name}")
             run_remote("sudo chmod 775 /mnt/#{name}")
-            run_remote("sudo chown #{remote_user}:#{remote_user} /mnt/#{name}")
+            run_remote("sudo chown #{Instance.username}:#{Instance.username} /mnt/#{name}")
             restart_service("mount_#{name}")
           end
         end

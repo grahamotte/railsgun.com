@@ -49,7 +49,7 @@ module Patches
             access: proxy
             url: localhost:5432
             password:
-            user: #{remote_user}
+            user: #{Instance.username}
             database: #{project}_production
             basicAuth: false
             isDefault: false

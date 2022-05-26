@@ -23,7 +23,7 @@ module Patches
           run_remote("#{yay_prefix} -S rclone")
           run_remote("mkdir -p #{File.dirname(remote_rclone_conf_path)}")
           run_remote("sudo touch #{remote_rclone_conf_path}")
-          run_remote("sudo chown #{remote_user}:#{remote_user} #{remote_rclone_conf_path}")
+          run_remote("sudo chown #{Instance.username}:#{Instance.username} #{remote_rclone_conf_path}")
           write_file(remote_rclone_conf_path, local_config)
         end
 

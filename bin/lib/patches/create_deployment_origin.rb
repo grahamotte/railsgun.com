@@ -2,7 +2,7 @@ module Patches
   class CreateDeploymentOrigin < Base
     class << self
       def needed?
-        return false unless instance
+        return false unless Instance.exists?
         return true unless remote_origin_exists?
 
         false
@@ -10,8 +10,8 @@ module Patches
 
       def apply
         # make known
-        run_local("ssh-keygen -R #{ipv4}")
-        run_local("ssh-keyscan -H #{ipv4} >> ~/.ssh/known_hosts", just_status: true)
+        run_local("ssh-keygen -R #{Instance.ipv4}")
+        run_local("ssh-keyscan -H #{Instance.ipv4} >> ~/.ssh/known_hosts", just_status: true)
 
         # clear dirs
         run_local("rm -rf #{local_dir}/tmp/#{host}.git")
@@ -20,7 +20,7 @@ module Patches
         # create origin and push current
         run_remote("#{yay_prefix} -S rsync") unless installed?('rsync')
         run_local("git clone --bare #{local_dir} #{local_dir}/tmp/#{host}.git")
-        run_local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{local_dir}/tmp/#{host}.git/ #{remote_user}@#{ipv4}:#{remote_origin_dir}/")
+        run_local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{local_dir}/tmp/#{host}.git/ #{Instance.username}@#{Instance.ipv4}:#{remote_origin_dir}/")
 
         # cleanup
         run_local("rm -rf #{local_dir}/tmp/#{host}.git")
@@ -29,7 +29,7 @@ module Patches
       # ---
 
       def remote_origin_dir
-        "/home/#{remote_user}/#{host}.git"
+        "/home/#{Instance.username}/#{host}.git"
       end
 
       def remote_origin_exists?

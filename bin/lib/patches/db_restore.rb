@@ -6,7 +6,7 @@ module Patches
       end
 
       def apply
-        return(puts('no instance.')) unless instance
+        return(puts('does not exist.')) unless Instance.exists?
 
         latest_backup_name = nil
 

@@ -6,12 +6,9 @@ module Patches
       end
 
       def apply
-        return(puts("no instance exists.")) unless instance
+        return(puts("does not exist.")) unless Instance.exists?
 
-        linode_req(
-          method: :delete,
-          url: "https://api.linode.com/v4/linode/instances/#{instance.dig('id')}",
-        )
+        Instance.destroy
       end
     end
   end
