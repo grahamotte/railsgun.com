@@ -3,7 +3,7 @@ module Patches
     class << self
       def needed?
         tool_versions.each do |t, v|
-          return true unless nofail { run_remote("#{asdf_prefix} list #{t}").include?(v) }
+          return true unless Utils.nofail { run_remote("#{asdf_prefix} list #{t}").include?(v) }
         end
 
         false

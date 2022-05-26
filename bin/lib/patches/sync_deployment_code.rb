@@ -38,7 +38,7 @@ module Patches
       end
 
       def remote_dir_exists?
-        nofail do
+        Utils.nofail do
           !!run_remote("cd #{remote_dir}; git rev-parse --is-inside-work-tree")
         end
       end

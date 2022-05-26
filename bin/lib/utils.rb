@@ -11,5 +11,14 @@ class Utils
       pp e&.http_body
       raise e
     end
+
+    def nofail
+      yield
+    rescue Net::SSH::ConnectionTimeout => e
+      raise e
+    rescue StandardError => e
+      puts e.message
+      false
+    end
   end
 end

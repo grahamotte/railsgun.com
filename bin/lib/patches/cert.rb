@@ -2,7 +2,7 @@ module Patches
   class Cert < Base
     class << self
       def needed?
-        le_subdomains = nofail do
+        le_subdomains = Utils.nofail do
           run_remote("sudo cat /etc/letsencrypt/live/#{host}/fullchain.pem | openssl x509 -noout -ext subjectAltName")
             .split
             .select { |x| x.start_with?('DNS:') }
@@ -13,7 +13,7 @@ module Patches
         return true unless le_subdomains
         return true unless le_subdomains.sort == subdomains.sort
 
-        expires_on = nofail do
+        expires_on = Utils.nofail do
           run_remote("sudo cat /etc/letsencrypt/live/#{host}/fullchain.pem | openssl x509 -noout -enddate")
             .then { |x| x.gsub('notAfter=', '') }
             .then { |x| Date.parse(x) - 14 }

@@ -165,21 +165,12 @@ module Patches
         text
       end
 
-      def nofail
-        yield
-      rescue Net::SSH::ConnectionTimeout => e
-        raise e
-      rescue StandardError => e
-        puts e.message
-        false
-      end
-
       def installed?(program)
         run_remote("command -v #{program}", just_status: true)
       end
 
       def service_running?(service)
-        nofail do
+        Utils.nofail do
           stat = run_remote("sudo systemctl | grep #{service}.service")&.downcase
           %w[loaded active running].all? { |x| stat.include?(x) }
         end
@@ -198,7 +189,7 @@ module Patches
       end
 
       def files_same?(path, data)
-        nofail do
+        Utils.nofail do
           md5local = Digest::MD5.hexdigest(data + "\n")
           md5remote = run_remote("sudo md5sum #{path}").split(' ').first
 
@@ -230,7 +221,7 @@ module Patches
 
         # create remote dir if it doesn't exist
         unless run_remote("sudo [ -d #{File.dirname(path)} ]")
-          nofail { run_remote("mkdir -p #{File.dirname(path)}") } || run_remote("sudo mkdir -p #{File.dirname(path)}")
+          Utils.nofail { run_remote("mkdir -p #{File.dirname(path)}") } || run_remote("sudo mkdir -p #{File.dirname(path)}")
         end
 
         # setup tmp files for copy

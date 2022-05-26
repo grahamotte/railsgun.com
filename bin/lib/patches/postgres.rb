@@ -11,7 +11,7 @@ module Patches
       def apply
         run_remote("#{yay_prefix} -S postgresql postgresql-libs")
 
-        if nofail { run_remote('sudo ls /var/lib/postgres/data/base') } # db exists
+        if Utils.nofail { run_remote('sudo ls /var/lib/postgres/data/base') } # db exists
           restart_service('postgresql')
         else
           run_remote("sudo -u postgres initdb -D /var/lib/postgres/data")
