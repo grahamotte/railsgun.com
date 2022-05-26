@@ -54,6 +54,7 @@ module Patches
 
       def cf_zone
         Utils.req(
+          method: :get,
           url: "https://api.cloudflare.com/client/v4/zones",
           headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
         ).dig(:result).find { |x| x[:name] == host }
@@ -63,7 +64,8 @@ module Patches
         return [] if cf_zone.nil?
 
         Utils.req(
-          url: "https://api.cloudflare.com/client/v4/zones/#{cf_zone['id']}/dns_records",
+          method: :get,
+          url: "https://api.cloudflare.com/client/v4/zones/#{cf_zone[:id]}/dns_records",
           headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
         ).dig(:result)
       end
