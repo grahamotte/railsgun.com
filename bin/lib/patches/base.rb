@@ -122,21 +122,6 @@ module Patches
       # helpers
       #
 
-      def req(**params)
-        params = { method: :get }.merge(params)
-
-        puts "#{params.dig(:method).to_s.upcase} #{params.dig(:url)} #{params.dig(:payload)}".green
-
-        RestClient::Request.execute(**params).body.then { |x| JSON.parse(x) }
-      rescue StandardError => e
-        pp e&.http_body
-        raise e
-      end
-
-      def linode_req(**params)
-        req(**params, headers: { Authorization: "Bearer #{Secrets.linode_token}", content_type: :json })
-      end
-
       def run_remote(cmd, *opts, just_status: false)
         run(cmd, *opts, user: Instance.username, host: Instance.ipv4, just_status: just_status)
       end

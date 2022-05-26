@@ -43,19 +43,13 @@ module Instances
       private
 
       def req(**params)
-        params = params.merge(
+        Utils.req(
+          **params,
           headers: {
             Authorization: "Bearer #{Secrets.linode_token}",
             content_type: :json,
           },
         )
-
-        puts "#{params.dig(:method).to_s.upcase} #{params.dig(:url)} #{params.dig(:payload)}".green
-
-        RestClient::Request.execute(**params).body.then { |x| JSON.parse(x, symbolize_names: true) }
-      rescue StandardError => e
-        pp e&.http_body
-        raise e
       end
     end
   end
