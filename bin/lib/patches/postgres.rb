@@ -2,7 +2,7 @@ module Patches
   class Postgres < Base
     class << self
       def needed?
-        return true unless Utils.run_remote("psql -l | grep #{project}_production", just_status: true)
+        return true unless Utils.run_remote("psql -l | grep #{Utils.project_name}_production", just_status: true)
         return true unless service_running?('postgresql')
 
         false
@@ -17,7 +17,7 @@ module Patches
           Utils.run_remote("sudo -u postgres initdb -D /var/lib/postgres/data")
           restart_service('postgresql')
           Utils.run_remote("sudo -u postgres createuser -s deploy")
-          Utils.run_remote("sudo -u postgres createdb #{project}_production")
+          Utils.run_remote("sudo -u postgres createdb #{Utils.project_name}_production")
         end
       end
     end

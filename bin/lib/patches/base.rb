@@ -35,10 +35,6 @@ module Patches
       # "constants"
       #
 
-      def project
-        Utils.domain_name.split('.').first
-      end
-
       def local_dir
         File.dirname(File.dirname(File.dirname(__dir__)))
       end

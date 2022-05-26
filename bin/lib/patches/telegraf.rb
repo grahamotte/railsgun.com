@@ -62,7 +62,7 @@ module Patches
             urls = ["http://127.0.0.1/nginx_status"]
 
           [[inputs.postgresql]]
-            address = "host=localhost user=deploy sslmode=disable dbname=#{project}_production"
+            address = "host=localhost user=deploy sslmode=disable dbname=#{Utils.project_name}_production"
             max_lifetime = "0s"
 
           [[outputs.influxdb_v2]]

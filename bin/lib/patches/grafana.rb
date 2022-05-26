@@ -50,7 +50,7 @@ module Patches
             url: localhost:5432
             password:
             user: #{Instance.username}
-            database: #{project}_production
+            database: #{Utils.project_name}_production
             basicAuth: false
             isDefault: false
             jsonData:
