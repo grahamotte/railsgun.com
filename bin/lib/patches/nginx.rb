@@ -1,10 +1,6 @@
 module Patches
   class Nginx < Base
     class << self
-      def always_needed?
-        true
-      end
-
       def apply
         run_remote("#{yay_prefix} -S nginx") unless installed?(:nginx)
         run_remote('sudo mkdir -p /var/www')

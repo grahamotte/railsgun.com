@@ -3,18 +3,6 @@
 
 require_relative 'lib/all'
 
-puts <<-TEXT
-                     ___
-                 __ /\\_ \\
-    _ __   __   /\\_\\\\//\\ \\     ____     __   __  __    ___
-  /\\`'__\\/'__`\\ \\/\\ \\ \\ \\ \\   /',__\\  /'_ `\\/\\ \\/\\ \\ /' _ `\\
-  \\ \\ \\//\\ \\L\\.\\_\\ \\ \\ \\_\\ \\_/\\__, `\\/\\ \\L\\ \\ \\ \\_\\ \\/\\ \\/\\ \\
-   \\ \\_\\\\ \\__/.\\_\\\\ \\_\\/\\____\\/\\____/\\ \\____ \\ \\____/\\ \\_\\ \\_\\
-    \\/_/ \\/__/\\/_/ \\/_/\\/____/\\/___/  \\/___L\\ \\/___/  \\/_/\\/_/
-                                        /\\____/
-                                        \\_/__/
-TEXT
-
 #
 # helpers
 #
@@ -27,68 +15,23 @@ def arg
   ARGV[1]&.to_sym
 end
 
-def sync_code
-  Patches::SyncOriginCode.call
-  Patches::SyncUpstreamCode.call
-  Patches::SyncArchiveCode.call
-  Patches::CreateDeploymentOrigin.call
-  Patches::SyncDeploymentCode.call
-end
-
-def full_deploy
-  Patches::Lint.call
-  Patches::UncommittedChanges.call
-  Patches::MakeKnown.call
-  Patches::DeploymentUser.call
-  Patches::WritePacmanConfig.call
-  Patches::InstallYay.call
-  Patches::SystemUpdate.call
-  Patches::InstallAsdf.call
-  Patches::InstallAsdfTools.call
-  Patches::InstallCurl.call
-  Patches::InstallHtop.call
-  Patches::CleanCaches.call
-  Patches::Influx.call
-  Patches::Telegraf.call
-  Patches::Grafana.call
-  Patches::InstallRclone.call
-  Patches::MountNetworkDrives.call
-  Patches::Dns.call
-  Patches::Cert.call
-  Patches::Nginx.call
-  sync_code
-  Patches::SyncSecrets.call
-  Patches::Postgres.call
-  Patches::Redis.call
-  Patches::RailsAssets.call
-  Patches::Rails.call
-  Patches::Swapoff.call
-  Config::Patch.call
-end
-
 #
-# flow
+# programs
 #
 
 if prog == :deploy
   if arg == :quick
-    sync_code
+    Patches::SyncDeploymentCode.call
     Patches::RailsAssets.call
     Patches::Rails.call
   elsif arg == :code
-    sync_code
-  elsif arg == :nginx
-    Patches::Nginx.call
+    Patches::SyncAllCode.call
   elsif arg == :lint
     Patches::Lint.call
   elsif arg == :cert
     Patches::Cert.call
-  elsif arg == :rails
-    Patches::Rails.call
-  elsif arg == :telegraf
-    Patches::Telegraf.call
   else
-    full_deploy
+    Patches::FullDeploy.call
   end
 end
 
@@ -108,7 +51,7 @@ if prog == :regenerate
   Patches::DbBackup.call
   Patches::InstanceDestroy.call
   Patches::InstanceCreate.call
-  full_deploy
+  Patches::FullDeploy.call
   Patches::DbRestore.call
 end
 
@@ -121,7 +64,6 @@ if prog == :log
   Patches::Base.run_remote("tail -f /var/www/#{Patches::Base.host}/log/production.log") if arg.nil? || arg == :rails
   Patches::Base.run_remote("tail -f /var/www/#{Patches::Base.host}/log/sidekiq.log") if arg == :sidekiq
   Patches::Base.run_remote("tail -f /var/log/nginx/access.log") if arg == :nginx
-
   Patches::Base.run_remote("sudo journalctl -f --since '2 hours ago' -u #{arg.to_s.gsub('sd_', '')}") if arg&.to_s&.start_with?('sd_')
 end
 

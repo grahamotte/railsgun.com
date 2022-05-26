@@ -1,10 +1,6 @@
 module Patches
   class WritePacmanConfig < Base
     class << self
-      def always_needed?
-        true
-      end
-
       def apply
         write_file("/etc/pacman.conf", pacman_conf)
       end

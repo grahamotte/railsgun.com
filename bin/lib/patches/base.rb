@@ -6,34 +6,21 @@ module Patches
       #
 
       def call
-        Instance.reload
-        pretty_name = name.split('::').last.underscore.gsub('_', ' ').titleize
         start_time = Time.now
+        puts "\n////// #{name.split('::').last.underscore.gsub('_', ' ').titleize} //////\n\n" if leaf?
 
-        puts
-        puts '#' * (pretty_name.length + 4)
-        puts "# #{pretty_name} #"
-        puts '#' * (pretty_name.length + 4)
-        puts
+        Instance.reload
+        apply if needed?
 
-        if always_needed?
-          apply
-        else
-          should_run = false
-          section("checking") { should_run = needed? }
-          section("applying") { apply } if should_run
-        end
-
-        puts
-        puts "took #{(Time.now - start_time).round(2)}s"
+        puts "\ntook #{(Time.now - start_time).round(2)}s" if leaf?
       end
 
-      def always_needed?
-        false
+      def leaf?
+        true
       end
 
       def needed?
-        raise 'implement needed'
+        true
       end
 
       def apply
@@ -47,10 +34,6 @@ module Patches
       #
       # "constants"
       #
-
-      def root_pass
-        SecureRandom.hex(16)
-      end
 
       def host
         File.basename(local_dir)
@@ -138,18 +121,6 @@ module Patches
       #
       # helpers
       #
-
-      def section(name)
-        puts "*** #{name}..."
-        yield if block_given?
-        puts
-      end
-
-      def subsection(name)
-        puts "--- #{name}..."
-        yield if block_given?
-        puts
-      end
 
       def req(**params)
         params = { method: :get }.merge(params)

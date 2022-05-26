@@ -1,10 +1,6 @@
 module Patches
   class Init < Base
     class << self
-      def always_needed?
-        true
-      end
-
       def apply
         raise 'no name' if init_name.nil?
         raise 'invalid name' unless init_name.include?('.')

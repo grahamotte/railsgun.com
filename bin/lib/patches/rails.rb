@@ -1,10 +1,6 @@
 module Patches
   class Rails < Base
     class << self
-      def always_needed?
-        true
-      end
-
       def apply
         write_file("/etc/systemd/system/rails.service", rails_unit)
         write_file("/etc/systemd/system/sidekiq.service", sidekiq_unit)
