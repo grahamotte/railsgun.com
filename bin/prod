@@ -61,10 +61,10 @@ if prog == :init
 end
 
 if prog == :log
-  Patches::Base.run_remote("tail -f /var/www/#{Patches::Base.host}/log/production.log") if arg.nil? || arg == :rails
-  Patches::Base.run_remote("tail -f /var/www/#{Patches::Base.host}/log/sidekiq.log") if arg == :sidekiq
-  Patches::Base.run_remote("tail -f /var/log/nginx/access.log") if arg == :nginx
-  Patches::Base.run_remote("sudo journalctl -f --since '2 hours ago' -u #{arg.to_s.gsub('sd_', '')}") if arg&.to_s&.start_with?('sd_')
+  Utils.run_remote("tail -f /var/www/#{Patches::Base.host}/log/production.log") if arg.nil? || arg == :rails
+  Utils.run_remote("tail -f /var/www/#{Patches::Base.host}/log/sidekiq.log") if arg == :sidekiq
+  Utils.run_remote("tail -f /var/log/nginx/access.log") if arg == :nginx
+  Utils.run_remote("sudo journalctl -f --since '2 hours ago' -u #{arg.to_s.gsub('sd_', '')}") if arg&.to_s&.start_with?('sd_')
 end
 
 if prog == :ssh

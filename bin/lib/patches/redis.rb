@@ -9,7 +9,7 @@ module Patches
       end
 
       def apply
-        run_remote("#{yay_prefix} -S redis")
+        Utils.run_remote("#{yay_prefix} -S redis")
         restart_service("redis")
       end
     end

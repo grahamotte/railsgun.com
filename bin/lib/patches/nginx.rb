@@ -2,9 +2,9 @@ module Patches
   class Nginx < Base
     class << self
       def apply
-        run_remote("#{yay_prefix} -S nginx") unless installed?(:nginx)
-        run_remote('sudo mkdir -p /var/www')
-        run_remote('sudo chown -R deploy:deploy /var/www')
+        Utils.run_remote("#{yay_prefix} -S nginx") unless installed?(:nginx)
+        Utils.run_remote('sudo mkdir -p /var/www')
+        Utils.run_remote('sudo chown -R deploy:deploy /var/www')
         write_file("/etc/nginx/nginx.conf", nginx_conf)
         restart_service("nginx", force: true)
       end

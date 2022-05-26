@@ -104,7 +104,7 @@ module Patches
       end
 
       def influx_token
-        @influx_token ||= run_remote('influx auth list --json | grep token')
+        @influx_token ||= Utils.run_remote('influx auth list --json | grep token')
           .then { |x| JSON.parse("{#{x.gsub(',', '')}}") }
           .dig('token')
       end
@@ -122,56 +122,13 @@ module Patches
       # helpers
       #
 
-      def run_remote(cmd, *opts, just_status: false)
-        run(cmd, *opts, user: Instance.username, host: Instance.ipv4, just_status: just_status)
-      end
-
-      def run_local(cmd, *opts, just_status: false)
-        run(cmd, *opts, user: `whoami`.chomp, host: 'localhost', just_status: just_status)
-      end
-
-      def run(cmd, *opts, user:, host:, just_status: false)
-        cmd = cmd % opts.map { |o| Shellwords.escape(o) } if opts.any?
-
-        puts "RUN #{user}@#{host} #{cmd}".blue
-
-        text = ""
-        code = 0
-
-        sleep(0.5)
-
-        if host == 'localhost'
-          Open3.popen3(cmd) do |_stdin, stdout, stderr, wait_thr|
-            loop { break unless (x = stdout.getc); print(x); text += x } # rubocop:disable Layout/EmptyLineAfterGuardClause
-            loop { break unless (x = stderr.getc); print(x); text += x } # rubocop:disable Layout/EmptyLineAfterGuardClause
-            code = wait_thr.value.to_i
-          end
-        else
-          Net::SSH.start(host, user, keys: [Secrets.id_rsa_path]) do |s|
-            s.open_channel do |channel|
-              channel.exec(cmd) do
-                channel.on_data { |_, data| print data; text += data }
-                channel.on_extended_data { |_, _, data| print data; text += data }
-                channel.on_request("exit-status") { |_, data| code = data.read_long }
-              end
-            end
-            s.loop
-          end
-        end
-
-        return code.zero? if just_status
-        raise "error code #{code}" unless code.zero?
-
-        text
-      end
-
       def installed?(program)
-        run_remote("command -v #{program}", just_status: true)
+        Utils.run_remote("command -v #{program}", just_status: true)
       end
 
       def service_running?(service)
         Utils.nofail do
-          stat = run_remote("sudo systemctl | grep #{service}.service")&.downcase
+          stat = Utils.run_remote("sudo systemctl | grep #{service}.service")&.downcase
           %w[loaded active running].all? { |x| stat.include?(x) }
         end
       end
@@ -179,8 +136,8 @@ module Patches
       def restart_service(service, force: false)
         return if !force && service_running?(service)
 
-        run_remote("sudo systemctl enable #{service}.service")
-        run_remote("sudo systemctl restart #{service}.service")
+        Utils.run_remote("sudo systemctl enable #{service}.service")
+        Utils.run_remote("sudo systemctl restart #{service}.service")
 
         raise 'not running' unless service_running?(service)
       rescue StandardError => e
@@ -191,7 +148,7 @@ module Patches
       def files_same?(path, data)
         Utils.nofail do
           md5local = Digest::MD5.hexdigest(data + "\n")
-          md5remote = run_remote("sudo md5sum #{path}").split(' ').first
+          md5remote = Utils.run_remote("sudo md5sum #{path}").split(' ').first
 
           return md5local == md5remote
         end
@@ -202,16 +159,16 @@ module Patches
       end
 
       def write_file_local(path, data)
-        run_local("rm -f #{path}")
+        Utils.run_local("rm -f #{path}")
         File.open(path, 'w+') { |f| f << data; f << "\n" }
       end
 
       def with_tmp_file(data = "")
         path = File.expand_path(File.join(local_dir, 'tmp', SecureRandom.hex(16)))
-        run_local("touch #{path}")
+        Utils.run_local("touch #{path}")
         File.open(path, 'w+') { |f| f << data } if data.present?
         result = yield(path)
-        run_local("rm #{path}")
+        Utils.run_local("rm #{path}")
         result
       end
 
@@ -220,8 +177,8 @@ module Patches
         return if files_same?(path, data)
 
         # create remote dir if it doesn't exist
-        unless run_remote("sudo [ -d #{File.dirname(path)} ]")
-          Utils.nofail { run_remote("mkdir -p #{File.dirname(path)}") } || run_remote("sudo mkdir -p #{File.dirname(path)}")
+        unless Utils.run_remote("sudo [ -d #{File.dirname(path)} ]")
+          Utils.nofail { Utils.run_remote("mkdir -p #{File.dirname(path)}") } || Utils.run_remote("sudo mkdir -p #{File.dirname(path)}")
         end
 
         # setup tmp files for copy
@@ -230,8 +187,8 @@ module Patches
 
         # copy over file
         write_file_local(local_tmp_file, data)
-        run_local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{Instance.username}@#{Instance.ipv4}:#{remote_tmp_file}")
-        run_remote("sudo cp #{remote_tmp_file} #{path}")
+        Utils.run_local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{Instance.username}@#{Instance.ipv4}:#{remote_tmp_file}")
+        Utils.run_remote("sudo cp #{remote_tmp_file} #{path}")
       end
     end
   end

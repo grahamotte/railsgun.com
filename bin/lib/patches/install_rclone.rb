@@ -14,13 +14,13 @@ module Patches
       def apply
         Secrets.reload!
 
-        run_remote("#{yay_prefix} -S fuse2")
+        Utils.run_remote("#{yay_prefix} -S fuse2")
         write_file("/etc/fuse.conf", fuse_conf)
 
-        run_remote("#{yay_prefix} -S rclone")
-        run_remote("mkdir -p #{File.dirname(remote_rclone_conf_path)}")
-        run_remote("sudo touch #{remote_rclone_conf_path}")
-        run_remote("sudo chown #{Instance.username}:#{Instance.username} #{remote_rclone_conf_path}")
+        Utils.run_remote("#{yay_prefix} -S rclone")
+        Utils.run_remote("mkdir -p #{File.dirname(remote_rclone_conf_path)}")
+        Utils.run_remote("sudo touch #{remote_rclone_conf_path}")
+        Utils.run_remote("sudo chown #{Instance.username}:#{Instance.username} #{remote_rclone_conf_path}")
         write_file(remote_rclone_conf_path, local_config)
 
         if Secrets.rclone.dig('dropbox').present?
@@ -40,7 +40,7 @@ module Patches
       end
 
       def remote_config
-        run_remote("cat #{remote_rclone_conf_path}")
+        Utils.run_remote("cat #{remote_rclone_conf_path}")
       rescue StandardError
         ""
       end

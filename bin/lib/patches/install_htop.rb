@@ -6,7 +6,7 @@ module Patches
       end
 
       def apply
-        run_remote("#{yay_prefix} -S htop")
+        Utils.run_remote("#{yay_prefix} -S htop")
       end
     end
   end

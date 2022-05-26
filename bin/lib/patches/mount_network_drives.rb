@@ -11,14 +11,14 @@ module Patches
       end
 
       def apply
-        run_remote("sudo rm -f /etc/systemd/system/mount_*.service", just_status: true)
+        Utils.run_remote("sudo rm -f /etc/systemd/system/mount_*.service", just_status: true)
 
         mounts.each do |name, rc|
           write_file("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))
-          run_remote("sudo systemctl daemon-reload")
-          run_remote("sudo mkdir -p /mnt/#{name}")
-          run_remote("sudo chmod 775 /mnt/#{name}")
-          run_remote("sudo chown #{Instance.username}:#{Instance.username} /mnt/#{name}")
+          Utils.run_remote("sudo systemctl daemon-reload")
+          Utils.run_remote("sudo mkdir -p /mnt/#{name}")
+          Utils.run_remote("sudo chmod 775 /mnt/#{name}")
+          Utils.run_remote("sudo chown #{Instance.username}:#{Instance.username} /mnt/#{name}")
           restart_service("mount_#{name}")
         end
       end

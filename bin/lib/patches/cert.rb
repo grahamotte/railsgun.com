@@ -3,7 +3,7 @@ module Patches
     class << self
       def needed?
         le_subdomains = Utils.nofail do
-          run_remote("sudo cat /etc/letsencrypt/live/#{host}/fullchain.pem | openssl x509 -noout -ext subjectAltName")
+          Utils.run_remote("sudo cat /etc/letsencrypt/live/#{host}/fullchain.pem | openssl x509 -noout -ext subjectAltName")
             .split
             .select { |x| x.start_with?('DNS:') }
             .map { |x| x.gsub('DNS:', '') }
@@ -14,7 +14,7 @@ module Patches
         return true unless le_subdomains.sort == subdomains.sort
 
         expires_on = Utils.nofail do
-          run_remote("sudo cat /etc/letsencrypt/live/#{host}/fullchain.pem | openssl x509 -noout -enddate")
+          Utils.run_remote("sudo cat /etc/letsencrypt/live/#{host}/fullchain.pem | openssl x509 -noout -enddate")
             .then { |x| x.gsub('notAfter=', '') }
             .then { |x| Date.parse(x) - 14 }
         end
@@ -26,15 +26,15 @@ module Patches
       end
 
       def apply
-        run_remote("#{yay_prefix} -S certbot certbot-nginx nginx")
-        run_remote('sudo systemctl stop nginx.service')
+        Utils.run_remote("#{yay_prefix} -S certbot certbot-nginx nginx")
+        Utils.run_remote('sudo systemctl stop nginx.service')
         write_file('/etc/nginx/nginx.conf', default_nginx_conf)
-        run_remote('sudo fuser -k 80/tcp || true')
-        run_remote('sudo systemctl start nginx.service')
-        run_remote('sudo nginx -t')
-        run_remote("sudo rm -rf /etc/letsencrypt")
-        run_remote("sudo certbot --nginx certonly --non-interactive --agree-tos -m cert@#{host} #{subdomains.map { |x| "-d #{x}" }.join(' ')}")
-        run_remote('sudo systemctl stop nginx.service')
+        Utils.run_remote('sudo fuser -k 80/tcp || true')
+        Utils.run_remote('sudo systemctl start nginx.service')
+        Utils.run_remote('sudo nginx -t')
+        Utils.run_remote("sudo rm -rf /etc/letsencrypt")
+        Utils.run_remote("sudo certbot --nginx certonly --non-interactive --agree-tos -m cert@#{host} #{subdomains.map { |x| "-d #{x}" }.join(' ')}")
+        Utils.run_remote('sudo systemctl stop nginx.service')
       end
 
       # ---

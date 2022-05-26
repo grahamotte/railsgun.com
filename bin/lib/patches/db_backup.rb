@@ -7,8 +7,8 @@ module Patches
         db_name = "#{project}_production"
         file = "/mnt/dbs/#{db_name}_#{Time.now.to_i}.sql"
 
-        run_remote("pg_dump -U #{Instance.username} --clean #{db_name} > #{file}")
-        run_remote("stat #{file}")
+        Utils.run_remote("pg_dump -U #{Instance.username} --clean #{db_name} > #{file}")
+        Utils.run_remote("stat #{file}")
       end
     end
   end

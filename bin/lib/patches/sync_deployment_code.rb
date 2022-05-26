@@ -5,8 +5,8 @@ module Patches
         return false unless Instance.exists?
         return true unless remote_dir_exists?
 
-        remote_head = run_remote("cd #{remote_dir}; git rev-parse HEAD")
-        local_head = run_local("git rev-parse HEAD")
+        remote_head = Utils.run_remote("cd #{remote_dir}; git rev-parse HEAD")
+        local_head = Utils.run_local("git rev-parse HEAD")
         return true if remote_head != local_head
 
         false
@@ -14,17 +14,17 @@ module Patches
 
       def apply
         # push to origin
-        run_local("#{git_prefix} remote remove deployment", just_status: true)
-        run_local("#{git_prefix} remote add deployment #{Instance.username}@#{Instance.ipv4}:#{remote_origin_dir}/")
-        run_local("#{git_prefix} push -f deployment master")
+        Utils.run_local("#{git_prefix} remote remove deployment", just_status: true)
+        Utils.run_local("#{git_prefix} remote add deployment #{Instance.username}@#{Instance.ipv4}:#{remote_origin_dir}/")
+        Utils.run_local("#{git_prefix} push -f deployment master")
 
         # sync with origin
-        run_remote('sudo mkdir -p /var/www')
-        run_remote('sudo chown -R deploy:deploy /var/www')
-        run_remote("git clone #{remote_origin_dir} #{remote_dir}") unless remote_dir_exists?
-        run_remote("cd #{remote_dir}; git fetch")
-        run_remote("cd #{remote_dir}; git checkout -- .")
-        run_remote("cd #{remote_dir}; git reset --hard origin/master")
+        Utils.run_remote('sudo mkdir -p /var/www')
+        Utils.run_remote('sudo chown -R deploy:deploy /var/www')
+        Utils.run_remote("git clone #{remote_origin_dir} #{remote_dir}") unless remote_dir_exists?
+        Utils.run_remote("cd #{remote_dir}; git fetch")
+        Utils.run_remote("cd #{remote_dir}; git checkout -- .")
+        Utils.run_remote("cd #{remote_dir}; git reset --hard origin/master")
       end
 
       # ---
@@ -39,7 +39,7 @@ module Patches
 
       def remote_dir_exists?
         Utils.nofail do
-          !!run_remote("cd #{remote_dir}; git rev-parse --is-inside-work-tree")
+          !!Utils.run_remote("cd #{remote_dir}; git rev-parse --is-inside-work-tree")
         end
       end
     end

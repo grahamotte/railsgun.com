@@ -12,12 +12,12 @@ module Patches
       end
 
       def apply
-        run_remote("#{yay_prefix} -S grafana")
-        run_remote("sudo rm -rf /var/lib/grafana/grafana.db")
+        Utils.run_remote("#{yay_prefix} -S grafana")
+        Utils.run_remote("sudo rm -rf /var/lib/grafana/grafana.db")
         write_file('/etc/grafana.ini', grafana_conf)
-        run_remote("sudo mkdir -p /etc/grafana/provisioning/datasources")
+        Utils.run_remote("sudo mkdir -p /etc/grafana/provisioning/datasources")
         write_file('/etc/grafana/provisioning/datasources/datasource.yaml', grafana_datasources_yaml)
-        run_remote("sudo mkdir -p /etc/grafana/provisioning/dashboards")
+        Utils.run_remote("sudo mkdir -p /etc/grafana/provisioning/dashboards")
         write_file('/etc/grafana/provisioning/dashboards/dashboards.yaml', grafana_dashboards_yaml)
         restart_service('grafana')
       end

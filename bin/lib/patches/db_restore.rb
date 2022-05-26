@@ -6,7 +6,7 @@ module Patches
 
         latest_backup_name = nil
 
-        latest_backup_name = run_remote('ls /mnt/dbs')
+        latest_backup_name = Utils.run_remote('ls /mnt/dbs')
           .split
           .compact
           .select { |x| x.start_with?("#{project}_production") }
@@ -14,7 +14,7 @@ module Patches
 
         raise 'no version found' unless latest_backup_name
 
-        run_remote("psql #{project}_production < /mnt/dbs/#{latest_backup_name}")
+        Utils.run_remote("psql #{project}_production < /mnt/dbs/#{latest_backup_name}")
       end
     end
   end

@@ -4,7 +4,7 @@ module Patches
       def apply
         write_file("/etc/systemd/system/rails.service", rails_unit)
         write_file("/etc/systemd/system/sidekiq.service", sidekiq_unit)
-        run_remote("sudo systemctl daemon-reload")
+        Utils.run_remote("sudo systemctl daemon-reload")
 
         File.open("#{local_dir}/config/sidekiq.yml", 'w') { |f| f << sidekiq_yml }
         write_file("#{remote_dir}/config/sidekiq.yml", sidekiq_yml)
@@ -17,7 +17,7 @@ module Patches
 
       def sidekiq_yml
         @sidekiq_yml ||= begin
-          items = run_local('rails runner "puts ApplicationJob.descendants.map { |x| [x.name, x.schedule] }.to_h.to_json"')
+          items = Utils.run_local('rails runner "puts ApplicationJob.descendants.map { |x| [x.name, x.schedule] }.to_h.to_json"')
             .then { |x| JSON.parse(x) }
             .compact
             .map do |k, v|
