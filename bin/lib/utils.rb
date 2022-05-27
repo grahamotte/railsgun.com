@@ -8,6 +8,10 @@ class Utils
       domain_name.split('.').first
     end
 
+    def project_root
+      File.dirname(File.dirname(__dir__))
+    end
+
     def req(**params)
       puts "#{params.dig(:method).to_s.upcase} #{params.dig(:url)} #{params.dig(:payload)}".green
 
@@ -20,11 +24,11 @@ class Utils
       raise e
     end
 
-    def Utils.run_remote(cmd, *opts, just_status: false)
+    def run_remote(cmd, *opts, just_status: false)
       run(cmd, *opts, user: Instance.username, host: Instance.ipv4, just_status: just_status)
     end
 
-    def Utils.run_local(cmd, *opts, just_status: false)
+    def run_local(cmd, *opts, just_status: false)
       run(cmd, *opts, user: `whoami`.chomp, host: 'localhost', just_status: just_status)
     end
 
