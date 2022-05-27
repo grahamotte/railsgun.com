@@ -11,7 +11,7 @@
     <meta name="env" content="<%= Rails.env %>" />
     <meta name="domain" content="<%= Rails.configuration.domain %>" />
     <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= javascript_pack_tag 'application' %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
   <body>
     <%= yield %>

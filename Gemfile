@@ -12,6 +12,7 @@ gem 'cronex'
 gem 'ed25519'
 gem "ferrum"
 gem 'filesize'
+gem 'jsbundling-rails'
 gem 'jwt'
 gem 'pg'
 gem 'public_suffix'
@@ -28,7 +29,6 @@ gem 'sidekiq'
 gem 'sidekiq-failures'
 gem 'sidekiq-scheduler'
 gem 'sidekiq-status'
-gem 'webpacker', '~> 6.0.0.beta.2'
 gem 'xmlrpc'
 
 group :default, :deploy, :development, :test do

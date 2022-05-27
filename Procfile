@@ -1,3 +1,3 @@
 web: bundle exec rails server -p 5000
-wds: bin/webpack-dev-server
+js_: yarn build --watch
 job: bundle exec sidekiq | tee log/sidekiq.log
