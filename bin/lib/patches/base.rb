@@ -169,7 +169,7 @@ module Patches
         return if files_same?(path, data)
 
         # create remote dir if it doesn't exist
-        unless Utils.run_remote("sudo [ -d #{File.dirname(path)} ]")
+        unless Utils.run_remote("sudo [ -d #{File.dirname(path)} ]", just_status: true)
           Utils.nofail { Utils.run_remote("mkdir -p #{File.dirname(path)}") } || Utils.run_remote("sudo mkdir -p #{File.dirname(path)}")
         end
 

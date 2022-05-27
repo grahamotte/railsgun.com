@@ -28,6 +28,8 @@ if prog == :deploy
     Patches::Lint.call
   elsif arg == :cert
     Patches::Cert.call
+  elsif arg == :secrets
+    Patches::SyncSecrets.call
   else
     Patches::FullDeploy.call
   end
