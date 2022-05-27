@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class HomeController < AuthorizedController
   skip_before_action :authorize, only: :index
 

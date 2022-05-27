@@ -1,11 +1,11 @@
 ---
 AllCops:
+  Exclude:
+    - bin/**/*
+    - db/schema.rb
   NewCops: enable
   SuggestExtensions: false
   TargetRubyVersion: 3.0.0
-  Exclude:
-    - 'bin/**/*'
-    - 'db/schema.rb'
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
 Layout/FirstHashElementIndentation:
@@ -71,6 +71,8 @@ Style/Documentation:
 Style/ExplicitBlockArgument:
   Enabled: false
 Style/ExponentialNotation:
+  Enabled: false
+Style/FrozenStringLiteralComment:
   Enabled: false
 Style/GuardClause:
   Enabled: true

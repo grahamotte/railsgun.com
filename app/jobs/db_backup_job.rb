@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class DbBackupJob < ApplicationJob
   schedule '11 11 11 * * *'
 

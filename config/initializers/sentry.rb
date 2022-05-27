@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 if Rails.env.production?
   Sentry.init do |config|
     config.dsn = Rails.application.credentials.sentry_dsn
