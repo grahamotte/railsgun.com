@@ -115,7 +115,7 @@ module Patches
       #
 
       def installed?(program)
-        Utils.run_remote("command -v #{program}", just_status: true)
+        Utils.run_remote("command -v #{program}", bool: true)
       end
 
       def service_running?(service)
@@ -169,7 +169,7 @@ module Patches
         return if files_same?(path, data)
 
         # create remote dir if it doesn't exist
-        unless Utils.run_remote("sudo [ -d #{File.dirname(path)} ]", just_status: true)
+        unless Utils.run_remote("sudo [ -d #{File.dirname(path)} ]", bool: true)
           Utils.nofail { Utils.run_remote("mkdir -p #{File.dirname(path)}") } || Utils.run_remote("sudo mkdir -p #{File.dirname(path)}")
         end
 

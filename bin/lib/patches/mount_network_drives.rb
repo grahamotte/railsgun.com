@@ -11,7 +11,7 @@ module Patches
       end
 
       def apply
-        Utils.run_remote("sudo rm -f /etc/systemd/system/mount_*.service", just_status: true)
+        Utils.run_remote("sudo rm -f /etc/systemd/system/mount_*.service", bool: true)
 
         mounts.each do |name, rc|
           write_file("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))

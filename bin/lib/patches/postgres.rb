@@ -2,7 +2,7 @@ module Patches
   class Postgres < Base
     class << self
       def needed?
-        return true unless Utils.run_remote("psql -l | grep #{Utils.project_name}_production", just_status: true)
+        return true unless Utils.run_remote("psql -l | grep #{Utils.project_name}_production", bool: true)
         return true unless service_running?('postgresql')
 
         false

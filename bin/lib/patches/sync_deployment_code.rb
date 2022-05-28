@@ -14,7 +14,7 @@ module Patches
 
       def apply
         # push to origin
-        Utils.run_local("#{git_prefix} remote remove deployment", just_status: true)
+        Utils.run_local("#{git_prefix} remote remove deployment", bool: true)
         Utils.run_local("#{git_prefix} remote add deployment #{Instance.username}@#{Instance.ipv4}:#{remote_origin_dir}/")
         Utils.run_local("#{git_prefix} push -f deployment master")
 

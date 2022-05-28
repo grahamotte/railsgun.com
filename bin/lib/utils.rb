@@ -24,15 +24,15 @@ class Utils
       raise e
     end
 
-    def run_remote(cmd, *opts, just_status: false)
-      run(cmd, *opts, user: Instance.username, host: Instance.ipv4, just_status: just_status)
+    def run_remote(cmd, *opts, bool: false)
+      run(cmd, *opts, user: Instance.username, host: Instance.ipv4, bool: bool)
     end
 
-    def run_local(cmd, *opts, just_status: false)
-      run(cmd, *opts, user: `whoami`.chomp, host: 'localhost', just_status: just_status)
+    def run_local(cmd, *opts, bool: false)
+      run(cmd, *opts, user: `whoami`.chomp, host: 'localhost', bool: bool)
     end
 
-    def run(cmd, *opts, user:, host:, just_status: false)
+    def run(cmd, *opts, user:, host:, bool: false)
       cmd = cmd % opts.map { |o| Shellwords.escape(o) } if opts.any?
 
       puts "RUN #{user}@#{host} #{cmd}".cyan
@@ -59,7 +59,7 @@ class Utils
         end
       end
 
-      return code.zero? if just_status
+      return code.zero? if bool
       raise "error code #{code}" unless code.zero?
 
       text

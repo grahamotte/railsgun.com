@@ -2,7 +2,7 @@ module Patches
   class InstallAsdf < Base
     class << self
       def needed?
-        !Utils.run_remote("#{asdf_prefix} --version", just_status: true)
+        !Utils.run_remote("#{asdf_prefix} --version", bool: true)
       end
 
       def apply

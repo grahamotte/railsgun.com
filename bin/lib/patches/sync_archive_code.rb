@@ -2,11 +2,11 @@ module Patches
   class SyncArchiveCode < Base
     class << self
       def needed?
-        Utils.run_local("git ls-remote -h #{archive_repo} HEAD", just_status: true)
+        Utils.run_local("git ls-remote -h #{archive_repo} HEAD", bool: true)
       end
 
       def apply
-        Utils.run_local('git remote remove archive', just_status: true)
+        Utils.run_local('git remote remove archive', bool: true)
         Utils.run_local("git remote add archive #{archive_repo}")
         Utils.run_local('git push -f archive master')
       end

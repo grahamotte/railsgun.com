@@ -11,9 +11,9 @@ module Patches
 
       def apply
         tool_versions.each do |t, v|
-          Utils.run_remote("#{yay_prefix} -S jemalloc", just_status: true)
+          Utils.run_remote("#{yay_prefix} -S jemalloc", bool: true)
           Utils.run_remote('mkdir -p ~/tmp')
-          Utils.run_remote("#{asdf_prefix} plugin add #{t}", just_status: true)
+          Utils.run_remote("#{asdf_prefix} plugin add #{t}", bool: true)
           Utils.run_remote("export TMPDIR=~/tmp; export RUBY_CONFIGURE_OPTS='--with-jemalloc'; #{asdf_prefix} install #{t} #{v}")
           Utils.run_remote("#{asdf_prefix} global #{t} #{v}")
           Utils.run_remote('rm -rf ~/tmp')

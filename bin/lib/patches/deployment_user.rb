@@ -30,8 +30,8 @@ module Patches
 
       # ---
 
-      def Utils.run_remote_root(cmd, *opts, just_status: false)
-        run(cmd, *opts, user: 'root', host: Instance.ipv4, just_status: just_status)
+      def Utils.run_remote_root(cmd, *opts, bool: false)
+        run(cmd, *opts, user: 'root', host: Instance.ipv4, bool: bool)
       end
 
       def write_file_root(path, data)

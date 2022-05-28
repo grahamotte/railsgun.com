@@ -9,8 +9,8 @@ module Patches
       end
 
       def apply
-        Utils.run_remote("sudo systemctl stop influxdb", just_status: true)
-        Utils.run_remote("#{yay_prefix} -R influxdb influx-cli", just_status: true)
+        Utils.run_remote("sudo systemctl stop influxdb", bool: true)
+        Utils.run_remote("#{yay_prefix} -R influxdb influx-cli", bool: true)
         Utils.run_remote("sudo rm -rf /home/deploy/.influxdbv2")
         Utils.run_remote("sudo rm -rf /var/lib/influxdb")
         Utils.run_remote("sudo rm -rf /var/lib/private/influxdb")
@@ -20,7 +20,7 @@ module Patches
         sleep(15)
 
         3.times do
-          Utils.run_remote('influx auth list', just_status: true) # primes influx or something idk
+          Utils.run_remote('influx auth list', bool: true) # primes influx or something idk
           sleep(1)
         end
 
