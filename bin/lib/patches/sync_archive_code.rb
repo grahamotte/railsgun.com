@@ -2,6 +2,8 @@ module Patches
   class SyncArchiveCode < Base
     class << self
       def needed?
+        return false if archive_repo.blank?
+
         Utils.run_local("git ls-remote -h #{archive_repo} HEAD", bool: true)
       end
 
@@ -11,10 +13,12 @@ module Patches
         Utils.run_local('git push -f archive master')
       end
 
-      # ---
+      private
 
       def archive_repo
-        "git@github.com:#{Secrets.github_account}/#{Utils.domain_name}.git"
+        return 'git@github.com:grahamotte/railsgun.com.git' if Utils.domain_name == 'railsgun.com'
+
+        Config.archive_repo
       end
     end
   end

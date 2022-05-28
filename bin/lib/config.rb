@@ -31,6 +31,10 @@ class Config
     def mounts
       { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
     end
+
+    def archive_repo
+      nil
+    end
   end
 
   class Patch < Patches::Base
