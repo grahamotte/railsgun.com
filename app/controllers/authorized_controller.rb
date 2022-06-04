@@ -9,8 +9,8 @@ class AuthorizedController < ApplicationController
 
   def current_user
     @current_user ||= begin
-      token = session[:jwt] || request.headers['Authorization']&.split&.last
-      session[:jwt] ||= token
+      token = request.headers['Authorization']&.split&.last || session[:jwt]
+      session[:jwt] = token
 
       JwtAuthorizer.find_user(token)
     end
