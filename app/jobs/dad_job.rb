@@ -1,4 +1,4 @@
-class DemoJob < ApplicationJob
+class DadJob < ApplicationJob
   schedule '*/30 * * * * *'
 
   def call
@@ -6,8 +6,8 @@ class DemoJob < ApplicationJob
       .get('https://icanhazdadjoke.com/', accept: :json)
       .body
       .then { |x| JSON.parse(x)['joke'] }
-      .then { |x| Rails.cache.write('demo_123', x) }
+      .then { |x| Rails.cache.write('dad_123', x) }
 
-    ActionCable.server.broadcast("demo_123", Rails.cache.read('demo_123'))
+    ActionCable.server.broadcast("dad_123", Rails.cache.read('dad_123'))
   end
 end

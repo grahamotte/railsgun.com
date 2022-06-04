@@ -4,7 +4,7 @@ import axios, {
   loggedIn as initLoggedIn,
   login,
   logout,
-} from "../utils/axios";
+} from "../utils/req";
 
 export default () => {
   const [email, setEmail] = useState("");
@@ -32,7 +32,7 @@ export default () => {
     const cable = createCable();
 
     cable.subscriptions.create(
-      { channel: "DemoChannel", id: "123" },
+      { channel: "DadChannel", id: "123" },
       { received: (rec) => setDad(rec) }
     );
 
@@ -118,7 +118,7 @@ export default () => {
           <h1 className="fst-italic fw-bold mb-0">RAILSGUN!</h1>
           <div className="text-muted">{dad}</div>
         </div>
-        <div className="col text-end align-self-end">
+        <div className="col-2 text-end align-self-end">
           {loggedIn && (
             <button
               type="button"

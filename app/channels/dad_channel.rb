@@ -1,6 +1,6 @@
-class DemoChannel < ApplicationCable::Channel
+class DadChannel < ApplicationChannel
   def subscribed
-    str = "demo_#{params[:id]}"
+    str = "dad_#{params[:id]}"
     stream_from str
     ActionCable.server.broadcast(str, Rails.cache.read(str))
   end

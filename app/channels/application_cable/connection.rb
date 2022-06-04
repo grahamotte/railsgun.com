@@ -3,16 +3,8 @@ module ApplicationCable
     identified_by :current_user
 
     def connect
-      self.current_user = find_verified_user
-    end
-
-    private
-
-    def find_verified_user
-      user = JwtAuthorizer.find_user(request.params[:jwt])
-      return user if user.present?
-
-      reject_unauthorized_connection
+      self.current_user = JwtAuthorizer.find_user(request.params[:jwt])
+      reject_unauthorized_connection if current_user.blank?
     end
   end
 end
