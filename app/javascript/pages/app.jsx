@@ -115,7 +115,14 @@ export default () => {
     >
       <div className="row mb-3">
         <div className="col-10">
-          <h1 className="fst-italic fw-bold mb-0">RAILSGUN!</h1>
+          <h1
+            className="mb-0"
+            style={{
+              fontFamily: "Jaldi Bold",
+            }}
+          >
+            RAILSGUN!
+          </h1>
           <div className="text-muted">{dad}</div>
         </div>
         <div className="col-2 text-end align-self-end">
