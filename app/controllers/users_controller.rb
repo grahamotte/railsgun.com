@@ -5,6 +5,7 @@ class UsersController < ApplicationController
     token = JwtAuthorizer.create_token(email, password)
 
     if token.present?
+      session[:jwt] = token
       render json: { token: token }
     else
       head :unauthorized
