@@ -14,6 +14,14 @@
  *= require_self
  */
 
+html, body {
+  overflow-x: hidden;
+}
+
+body {
+  position: relative
+}
+
 @font-face {
   font-family: 'Jaldi Bold';
   src: url('Jaldi-Bold.ttf') format('truetype');
