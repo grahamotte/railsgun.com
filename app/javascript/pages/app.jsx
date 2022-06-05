@@ -114,7 +114,7 @@ export default () => {
       style={{ fontSize: "0.75em" }}
     >
       <div className="row mb-3">
-        <div className="col-10">
+        <div className="col">
           <h1
             className="mb-0"
             style={{
@@ -125,7 +125,7 @@ export default () => {
           </h1>
           <div className="text-muted">{dad}</div>
         </div>
-        <div className="col-2 text-end align-self-end">
+        <div className="col text-end align-self-end">
           {loggedIn && (
             <button
               type="button"
