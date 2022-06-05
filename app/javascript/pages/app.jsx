@@ -121,7 +121,7 @@ export default () => {
               fontFamily: "Jaldi Bold",
             }}
           >
-            RAILSGUN!
+            RAILSGUN! <i className="fa-solid fa-meteor"></i>
           </h1>
           <div className="text-muted">{dad}</div>
         </div>
