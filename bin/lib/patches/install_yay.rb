@@ -2,7 +2,7 @@ module Patches
   class InstallYay < Base
     class << self
       def needed?
-        !installed?(:yay)
+        !Instance.installed?(:yay)
       end
 
       def apply

@@ -2,9 +2,9 @@ module Patches
   class Telegraf < Base
     class << self
       def needed?
-        return true unless installed?('telegraf')
+        return true unless Instance.installed?('telegraf')
         return true unless Text.remote_md5_eq?('/etc/telegraf/telegraf.conf', telegraf_conf)
-        return true unless service_running?('telegraf')
+        return true unless Instance.service_running?('telegraf')
 
         false
       end
@@ -12,7 +12,7 @@ module Patches
       def apply
         Cmd.remote("#{yay_prefix} -S telegraf-bin")
         Text.write_remote('/etc/telegraf/telegraf.conf', telegraf_conf)
-        restart_service('telegraf')
+        Instance.restart_service('telegraf')
       end
 
       # ---

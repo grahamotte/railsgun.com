@@ -2,11 +2,11 @@ module Patches
   class Nginx < Base
     class << self
       def apply
-        Cmd.remote("#{yay_prefix} -S nginx") unless installed?(:nginx)
+        Cmd.remote("#{yay_prefix} -S nginx") unless Instance.installed?(:nginx)
         Cmd.remote('sudo mkdir -p /var/www')
         Cmd.remote('sudo chown -R deploy:deploy /var/www')
         Text.write_remote("/etc/nginx/nginx.conf", nginx_conf)
-        restart_service("nginx", force: true)
+        Instance.restart_service("nginx", force: true)
       end
 
       # ---

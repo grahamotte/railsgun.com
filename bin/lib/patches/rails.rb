@@ -9,8 +9,8 @@ module Patches
         File.open("#{local_dir}/config/sidekiq.yml", 'w') { |f| f << sidekiq_yml }
         Text.write_remote("#{remote_dir}/config/sidekiq.yml", sidekiq_yml)
 
-        restart_service("rails", force: true)
-        restart_service("sidekiq", force: true)
+        Instance.restart_service("rails", force: true)
+        Instance.restart_service("sidekiq", force: true)
       end
 
       # ---

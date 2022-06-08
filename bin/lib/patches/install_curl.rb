@@ -2,7 +2,7 @@ module Patches
   class InstallCurl < Base
     class << self
       def needed?
-        !installed?(:curl)
+        !Instance.installed?(:curl)
       end
 
       def apply

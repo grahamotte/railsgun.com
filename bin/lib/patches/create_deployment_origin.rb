@@ -18,7 +18,7 @@ module Patches
         Cmd.remote("rm -rf #{remote_origin_dir}")
 
         # create origin and push current
-        Cmd.remote("#{yay_prefix} -S rsync") unless installed?('rsync')
+        Cmd.remote("#{yay_prefix} -S rsync") unless Instance.installed?('rsync')
         Cmd.local("git clone --bare #{local_dir} #{local_dir}/tmp/#{Utils.domain_name}.git")
         Cmd.local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{local_dir}/tmp/#{Utils.domain_name}.git/ #{Instance.username}@#{Instance.ipv4}:#{remote_origin_dir}/")
 

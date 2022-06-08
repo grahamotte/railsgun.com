@@ -2,7 +2,7 @@ module Patches
   class InstallHtop < Base
     class << self
       def needed?
-        !installed?(:htop)
+        !Instance.installed?(:htop)
       end
 
       def apply

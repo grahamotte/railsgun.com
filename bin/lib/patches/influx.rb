@@ -2,8 +2,8 @@ module Patches
   class Influx < Base
     class << self
       def needed?
-        return true unless installed?('influx')
-        return true unless service_running?('influxdb')
+        return true unless Instance.installed?('influx')
+        return true unless Instance.service_running?('influxdb')
 
         false
       end
@@ -15,7 +15,7 @@ module Patches
         Cmd.remote("sudo rm -rf /var/lib/influxdb")
         Cmd.remote("sudo rm -rf /var/lib/private/influxdb")
         Cmd.remote("#{yay_prefix} -S influxdb influx-cli")
-        restart_service('influxdb');
+        Instance.restart_service('influxdb');
 
         sleep(15)
 

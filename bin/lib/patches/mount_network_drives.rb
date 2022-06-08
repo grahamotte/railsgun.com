@@ -4,7 +4,7 @@ module Patches
       def needed?
         mounts.each do |name, rc|
           return true unless Text.remote_md5_eq?("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))
-          return true unless service_running?("mount_#{name}")
+          return true unless Instance.service_running?("mount_#{name}")
         end
 
         false
@@ -19,7 +19,7 @@ module Patches
           Cmd.remote("sudo mkdir -p /mnt/#{name}")
           Cmd.remote("sudo chmod 775 /mnt/#{name}")
           Cmd.remote("sudo chown #{Instance.username}:#{Instance.username} /mnt/#{name}")
-          restart_service("mount_#{name}")
+          Instance.restart_service("mount_#{name}")
         end
       end
 

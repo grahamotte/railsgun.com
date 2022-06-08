@@ -4,7 +4,7 @@ module Patches
       def needed?
         Secrets.reload!
 
-        return true unless installed?('rclone')
+        return true unless Instance.installed?('rclone')
         return true unless Text.remote_md5_eq?("/etc/fuse.conf", fuse_conf)
         return true unless Text.eq?(local_config, remote_config)
 

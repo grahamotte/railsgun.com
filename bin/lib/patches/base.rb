@@ -109,33 +109,6 @@ module Patches
           .map(&:split)
           .to_h
       end
-
-      #
-      # helpers
-      #
-
-      def installed?(program)
-        Cmd.remote("command -v #{program}", bool: true)
-      end
-
-      def service_running?(service)
-        Utils.nofail do
-          stat = Cmd.remote("sudo systemctl | grep #{service}.service")&.downcase
-          %w[loaded active running].all? { |x| stat.include?(x) }
-        end
-      end
-
-      def restart_service(service, force: false)
-        return if !force && service_running?(service)
-
-        Cmd.remote("sudo systemctl enable #{service}.service")
-        Cmd.remote("sudo systemctl restart #{service}.service")
-
-        raise 'not running' unless service_running?(service)
-      rescue StandardError => e
-        sleep(5)
-        raise 'not running' unless service_running?(service)
-      end
     end
   end
 end

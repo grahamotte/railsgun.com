@@ -2,11 +2,11 @@ module Patches
   class Grafana < Base
     class << self
       def needed?
-        return true unless installed?('grafana-server')
+        return true unless Instance.installed?('grafana-server')
         return true unless Text.remote_md5_eq?('/etc/grafana.ini', grafana_conf)
         return true unless Text.remote_md5_eq?('/etc/grafana/provisioning/datasources/datasource.yaml', grafana_datasources_yaml)
         return true unless Text.remote_md5_eq?('/etc/grafana/provisioning/dashboards/dashboards.yaml', grafana_dashboards_yaml)
-        return true unless service_running?('grafana')
+        return true unless Instance.service_running?('grafana')
 
         false
       end
@@ -19,7 +19,7 @@ module Patches
         Text.write_remote('/etc/grafana/provisioning/datasources/datasource.yaml', grafana_datasources_yaml)
         Cmd.remote("sudo mkdir -p /etc/grafana/provisioning/dashboards")
         Text.write_remote('/etc/grafana/provisioning/dashboards/dashboards.yaml', grafana_dashboards_yaml)
-        restart_service('grafana')
+        Instance.restart_service('grafana')
       end
 
       # ---
