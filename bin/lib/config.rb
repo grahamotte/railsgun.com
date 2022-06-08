@@ -13,7 +13,7 @@ class Config
     end
 
     def instance_size
-      'g6-nanode-1'
+      'g6-standard-1'
     end
 
     def instance_image
