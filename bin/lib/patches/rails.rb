@@ -49,7 +49,7 @@ development:
           [Service]
           User=#{Instance.username}
           Type=simple
-          ExecStart=bash -c "#{rails_prefix} rails server"
+          ExecStart=bash -c "#{Const.rails} rails server"
           Restart=always
 
           [Install]
@@ -67,7 +67,7 @@ development:
           [Service]
           User=#{Instance.username}
           Type=simple
-          ExecStart=bash -c \"#{rails_prefix} sidekiq -c #{job_concurrency} | tee #{Const.remote_root}/log/sidekiq.log\"
+          ExecStart=bash -c \"#{Const.rails} sidekiq -c #{Const.job_concurrency} | tee #{Const.remote_root}/log/sidekiq.log\"
           Restart=always
 
           [Install]

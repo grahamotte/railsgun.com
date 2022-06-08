@@ -42,7 +42,7 @@ module Patches
 
       def dns_config
         [
-          *subdomains.map { |x| { type: 'A', name: x, content: Instance.ipv4, proxied: false, ttl: 1 } },
+          *Const.subdomains.map { |x| { type: 'A', name: x, content: Instance.ipv4, proxied: false, ttl: 1 } },
           { type: 'MX', name: Const.domain, priority: 10, content: 'in1-smtp.messagingengine.com', proxied: false, ttl: 1 },
           { type: 'MX', name: Const.domain, priority: 20, content: 'in2-smtp.messagingengine.com', proxied: false, ttl: 1 },
           { type: 'CNAME', name: "fm1._domainkey.#{Const.domain}", content: "fm1.#{Const.domain}.dkim.fmhosted.com", proxied: false, ttl: 1 },

@@ -2,7 +2,7 @@ module Patches
   class MountNetworkDrives < Base
     class << self
       def needed?
-        mounts.each do |name, rc|
+        Const.mounts.each do |name, rc|
           return true unless Text.remote_md5_eq?("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))
           return true unless Instance.service_running?("mount_#{name}")
         end
@@ -13,7 +13,7 @@ module Patches
       def apply
         Cmd.remote("sudo rm -f /etc/systemd/system/mount_*.service", bool: true)
 
-        mounts.each do |name, rc|
+        Const.mounts.each do |name, rc|
           Text.write_remote("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))
           Cmd.remote("sudo systemctl daemon-reload")
           Cmd.remote("sudo mkdir -p /mnt/#{name}")
@@ -39,7 +39,7 @@ module Patches
             --allow-other \\
             --umask=0000 \\
             --uid=1000 \\
-            --config #{remote_rclone_conf_path} \\
+            --config #{Const.remote_rclone_conf_path} \\
             #{rc} /mnt/#{name}
           ExecStop=/bin/fusermount -uz /mnt/#{name}
           Restart=always

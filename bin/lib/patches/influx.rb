@@ -10,11 +10,11 @@ module Patches
 
       def apply
         Cmd.remote("sudo systemctl stop influxdb", bool: true)
-        Cmd.remote("#{yay_prefix} -R influxdb influx-cli", bool: true)
+        Cmd.remote("#{Const.yay} -R influxdb influx-cli", bool: true)
         Cmd.remote("sudo rm -rf /home/deploy/.influxdbv2")
         Cmd.remote("sudo rm -rf /var/lib/influxdb")
         Cmd.remote("sudo rm -rf /var/lib/private/influxdb")
-        Cmd.remote("#{yay_prefix} -S influxdb influx-cli")
+        Cmd.remote("#{Const.yay} -S influxdb influx-cli")
         Instance.restart_service('influxdb');
 
         sleep(15)

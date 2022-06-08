@@ -9,7 +9,7 @@ module Patches
       end
 
       def apply
-        Cmd.remote("#{yay_prefix} -S postgresql postgresql-libs")
+        Cmd.remote("#{Const.yay} -S postgresql postgresql-libs")
 
         if Utils.nofail { Cmd.remote('sudo ls /var/lib/postgres/data/base') } # db exists
           Instance.restart_service('postgresql')

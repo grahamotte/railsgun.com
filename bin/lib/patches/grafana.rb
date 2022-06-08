@@ -12,7 +12,7 @@ module Patches
       end
 
       def apply
-        Cmd.remote("#{yay_prefix} -S grafana")
+        Cmd.remote("#{Const.yay} -S grafana")
         Cmd.remote("sudo rm -rf /var/lib/grafana/grafana.db")
         Text.write_remote('/etc/grafana.ini', grafana_conf)
         Cmd.remote("sudo mkdir -p /etc/grafana/provisioning/datasources")
@@ -37,7 +37,7 @@ module Patches
             url: http://localhost:8086
             isDefault: true
             secureJsonData:
-              token: #{influx_token}
+              token: #{Const.influx_token}
             jsonData:
               version: Flux
               organization: telegraf

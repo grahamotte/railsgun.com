@@ -6,7 +6,7 @@ module Patches
       end
 
       def apply
-        Cmd.remote("#{yay_prefix} -S htop")
+        Cmd.remote("#{Const.yay} -S htop")
       end
     end
   end

@@ -10,7 +10,7 @@ module Patches
       end
 
       def apply
-        Cmd.remote("#{yay_prefix} -S telegraf-bin")
+        Cmd.remote("#{Const.yay} -S telegraf-bin")
         Text.write_remote('/etc/telegraf/telegraf.conf', telegraf_conf)
         Instance.restart_service('telegraf')
       end
@@ -67,7 +67,7 @@ module Patches
 
           [[outputs.influxdb_v2]]
             urls = ["http://127.0.0.1:8086"]
-            token = "#{influx_token}"
+            token = "#{Const.influx_token}"
             organization = "telegraf"
             bucket = "telegraf"
         TEXT

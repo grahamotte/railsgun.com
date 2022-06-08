@@ -6,7 +6,7 @@ module Patches
       end
 
       def apply
-        Cmd.remote("#{yay_prefix} -S zsh")
+        Cmd.remote("#{Const.yay} -S zsh")
         Cmd.remote("rm -rf /home/#{Instance.username}/.oh-my-zsh")
         Cmd.remote("rm -f /home/#{Instance.username}/.zshrc")
         Cmd.remote('sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')

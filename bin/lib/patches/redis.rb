@@ -9,7 +9,7 @@ module Patches
       end
 
       def apply
-        Cmd.remote("#{yay_prefix} -S redis")
+        Cmd.remote("#{Const.yay} -S redis")
         Instance.restart_service("redis")
       end
     end

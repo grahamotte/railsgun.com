@@ -6,7 +6,7 @@ module Patches
       end
 
       def apply
-        Cmd.remote("#{yay_prefix} -S curl")
+        Cmd.remote("#{Const.yay} -S curl")
       end
     end
   end

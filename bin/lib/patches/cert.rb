@@ -11,7 +11,7 @@ module Patches
         end
 
         return true unless le_subdomains
-        return true unless le_subdomains.sort == subdomains.sort
+        return true unless le_subdomains.sort == Const.subdomains.sort
 
         expires_on = Utils.nofail do
           Cmd.remote("sudo cat /etc/letsencrypt/live/#{Const.domain}/fullchain.pem | openssl x509 -noout -enddate")
@@ -26,14 +26,14 @@ module Patches
       end
 
       def apply
-        Cmd.remote("#{yay_prefix} -S certbot certbot-nginx nginx")
+        Cmd.remote("#{Const.yay} -S certbot certbot-nginx nginx")
         Cmd.remote('sudo systemctl stop nginx.service')
         Text.write_remote('/etc/nginx/nginx.conf', default_nginx_conf)
         Cmd.remote('sudo fuser -k 80/tcp || true')
         Cmd.remote('sudo systemctl start nginx.service')
         Cmd.remote('sudo nginx -t')
         Cmd.remote("sudo rm -rf /etc/letsencrypt")
-        Cmd.remote("sudo certbot --nginx certonly --non-interactive --agree-tos -m cert@#{Const.domain} #{subdomains.map { |x| "-d #{x}" }.join(' ')}")
+        Cmd.remote("sudo certbot --nginx certonly --non-interactive --agree-tos -m cert@#{Const.domain} #{Const.subdomains.map { |x| "-d #{x}" }.join(' ')}")
         Cmd.remote('sudo systemctl stop nginx.service')
       end
 
