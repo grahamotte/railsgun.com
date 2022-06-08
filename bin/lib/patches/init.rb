@@ -22,7 +22,8 @@ module Patches
       end
 
       def init_dir
-        local_dir
+        Const
+          .local_root
           .then { |x| File.dirname(x) }
           .then { |x| File.join(x, init_name) }
       end

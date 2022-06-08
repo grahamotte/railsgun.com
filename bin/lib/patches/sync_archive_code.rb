@@ -20,7 +20,7 @@ module Patches
       end
 
       def archive_repo
-        return 'git@github.com:grahamotte/railsgun.com.git' if Utils.domain_name == 'railsgun.com'
+        return 'git@github.com:grahamotte/railsgun.com.git' if Const.domain == 'railsgun.com'
 
         Config.archive_repo
       end

@@ -9,10 +9,10 @@ end
 if prog == :local || prog.blank?
   system("foreman start")
 elsif prog == :setup_remote
-  config_path = File.join(Utils.project_root, 'tmp/ssh_config')
+  config_path = File.join(Const.local_root, 'tmp/ssh_config')
   File.open(config_path, 'w') do |f|
     f << <<~TEXT
-      Host #{Utils.domain_name}
+      Host #{Const.domain}
         User #{Instance.username}
         HostName #{Instance.ipv4}
         IdentityFile #{Secrets.id_rsa_path}

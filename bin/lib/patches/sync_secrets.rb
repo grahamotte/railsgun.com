@@ -13,7 +13,7 @@ module Patches
       def apply
         Cmd.remote('sudo mkdir -p /var/www')
         Cmd.remote('sudo chown -R deploy:deploy /var/www')
-        Cmd.remote("mkdir -p /var/www/#{Utils.domain_name}/config")
+        Cmd.remote("mkdir -p /var/www/#{Const.domain}/config")
         Text.write_remote(remote_rails_path, Secrets.all_rails_formatted)
         Text.write_remote(remote_path, Secrets.all.to_yaml)
 
@@ -25,11 +25,11 @@ module Patches
       end
 
       def remote_rails_path
-        "#{remote_dir}/config/secrets.yml"
+        "#{Const.remote_root}/config/secrets.yml"
       end
 
       def local_rails_path
-        "#{local_dir}/config/secrets.yml"
+        "#{Const.local_root}/config/secrets.yml"
       end
     end
   end

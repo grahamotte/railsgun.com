@@ -12,6 +12,7 @@ Bundler.require(:deploy)
 
 require_relative 'patches/base'
 require_relative 'config'
+require_relative 'const'
 require_relative 'utils'
 require_relative 'cache'
 require_relative 'secrets'

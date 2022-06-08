@@ -2,7 +2,7 @@ module Patches
   class Postgres < Base
     class << self
       def needed?
-        return true unless Cmd.remote("psql -l | grep #{Utils.project_name}_production", bool: true)
+        return true unless Cmd.remote("psql -l | grep #{Const.project}_production", bool: true)
         return true unless Instance.service_running?('postgresql')
 
         false
@@ -17,7 +17,7 @@ module Patches
           Cmd.remote("sudo -u postgres initdb -E unicode -D /var/lib/postgres/data")
           Instance.restart_service('postgresql')
           Cmd.remote("cd ~postgres; sudo -u postgres createuser -s deploy")
-          Cmd.remote("cd ~postgres; sudo -u postgres createdb #{Utils.project_name}_production")
+          Cmd.remote("cd ~postgres; sudo -u postgres createdb #{Const.project}_production")
         end
       end
     end

@@ -50,7 +50,7 @@ module Patches
             url: localhost:5432
             password:
             user: #{Instance.username}
-            database: #{Utils.project_name}_production
+            database: #{Const.project}_production
             basicAuth: false
             isDefault: false
             jsonData:
@@ -70,7 +70,7 @@ module Patches
               type: file
               allowUiUpdates: true
               options:
-                path: #{remote_dir}/data/dashboards
+                path: #{Const.remote_root}/data/dashboards
         TEXT
       end
 

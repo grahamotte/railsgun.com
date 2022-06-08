@@ -35,14 +35,6 @@ module Patches
       # "constants"
       #
 
-      def local_dir
-        File.dirname(File.dirname(File.dirname(__dir__)))
-      end
-
-      def remote_dir
-        "/var/www/#{Utils.domain_name}"
-      end
-
       def mounts
         x = {}
         x = { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
@@ -56,8 +48,8 @@ module Patches
           .compact
           .push('www', 'gf', 'sq')
           .uniq
-          .map { |x| "#{x}.#{Utils.domain_name}" }
-          .unshift(Utils.domain_name)
+          .map { |x| "#{x}.#{Const.domain}" }
+          .unshift(Const.domain)
       end
 
       def job_concurrency
@@ -92,7 +84,7 @@ module Patches
           queue: '*',
         }.map { |k, v| "export #{k.to_s.upcase}=#{v}" }.join('; ')
 
-        "cd #{remote_dir}; #{env}; #{asdf_exec_prefix} bundle exec"
+        "cd #{Const.remote_root}; #{env}; #{asdf_exec_prefix} bundle exec"
       end
 
       def influx_token
@@ -102,7 +94,7 @@ module Patches
       end
 
       def tool_versions
-        [local_dir, remote_dir]
+        [Const.local_root, Const.remote_root]
           .find { |x| Dir.exist?(x) }
           .then { |x| File.join(x, '.tool-versions') }
           .then { |x| File.readlines(x) }

@@ -6,8 +6,8 @@ module Patches
         Text.write_remote("/etc/systemd/system/sidekiq.service", sidekiq_unit)
         Cmd.remote("sudo systemctl daemon-reload")
 
-        File.open("#{local_dir}/config/sidekiq.yml", 'w') { |f| f << sidekiq_yml }
-        Text.write_remote("#{remote_dir}/config/sidekiq.yml", sidekiq_yml)
+        File.open("#{Const.local_root}/config/sidekiq.yml", 'w') { |f| f << sidekiq_yml }
+        Text.write_remote("#{Const.remote_root}/config/sidekiq.yml", sidekiq_yml)
 
         Instance.restart_service("rails", force: true)
         Instance.restart_service("sidekiq", force: true)
@@ -67,7 +67,7 @@ development:
           [Service]
           User=#{Instance.username}
           Type=simple
-          ExecStart=bash -c \"#{rails_prefix} sidekiq -c #{job_concurrency} | tee #{remote_dir}/log/sidekiq.log\"
+          ExecStart=bash -c \"#{rails_prefix} sidekiq -c #{job_concurrency} | tee #{Const.remote_root}/log/sidekiq.log\"
           Restart=always
 
           [Install]

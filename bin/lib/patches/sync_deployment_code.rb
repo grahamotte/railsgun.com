@@ -8,7 +8,7 @@ module Patches
 
         local_head = Cmd.local("git rev-parse HEAD")
 
-        remote_head = Cmd.remote("cd #{remote_dir}; git rev-parse HEAD")
+        remote_head = Cmd.remote("cd #{Const.remote_root}; git rev-parse HEAD")
         return true if remote_head != local_head
 
         remote_src_head = Cmd.remote("cd #{remote_src_dir}; git rev-parse HEAD")
@@ -27,9 +27,9 @@ module Patches
         Cmd.remote('sudo mkdir -p /var/www')
         Cmd.remote("sudo chown -R #{Instance.username}:#{Instance.username} /var/www")
         Cmd.remote("git clone #{remote_origin_dir} #{remote_dir}") unless remote_dir_exists?
-        Cmd.remote("cd #{remote_dir}; git fetch")
-        Cmd.remote("cd #{remote_dir}; git checkout -- .")
-        Cmd.remote("cd #{remote_dir}; git reset --hard origin/master")
+        Cmd.remote("cd #{Const.remote_root}; git fetch")
+        Cmd.remote("cd #{Const.remote_root}; git checkout -- .")
+        Cmd.remote("cd #{Const.remote_root}; git reset --hard origin/master")
 
         # sync with origin src
         Cmd.remote("sudo mkdir -p #{remote_src_dir}")
@@ -47,17 +47,17 @@ module Patches
       end
 
       def remote_origin_dir
-        "/home/#{Instance.username}/#{Utils.domain_name}.git"
+        "/home/#{Instance.username}/#{Const.domain}.git"
       end
 
       def remote_dir_exists?
         Utils.nofail do
-          !!Cmd.remote("cd #{remote_dir}; git rev-parse --is-inside-work-tree")
+          !!Cmd.remote("cd #{Const.remote_root}; git rev-parse --is-inside-work-tree")
         end
       end
 
       def remote_src_dir
-        "/home/#{Instance.username}/src/#{Utils.domain_name}"
+        "/home/#{Instance.username}/src/#{Const.domain}"
       end
 
       def remote_src_dir_exists?

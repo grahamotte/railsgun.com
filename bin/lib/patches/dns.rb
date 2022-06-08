@@ -22,7 +22,7 @@ module Patches
         cloudflare_zone = Utils.req(
           url: "https://api.cloudflare.com/client/v4/zones",
           method: :post,
-          payload: { name: Utils.domain_name }.to_json,
+          payload: { name: Const.domain }.to_json,
           headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
         )
 
@@ -43,12 +43,12 @@ module Patches
       def dns_config
         [
           *subdomains.map { |x| { type: 'A', name: x, content: Instance.ipv4, proxied: false, ttl: 1 } },
-          { type: 'MX', name: Utils.domain_name, priority: 10, content: 'in1-smtp.messagingengine.com', proxied: false, ttl: 1 },
-          { type: 'MX', name: Utils.domain_name, priority: 20, content: 'in2-smtp.messagingengine.com', proxied: false, ttl: 1 },
-          { type: 'CNAME', name: "fm1._domainkey.#{Utils.domain_name}", content: "fm1.#{Utils.domain_name}.dkim.fmhosted.com", proxied: false, ttl: 1 },
-          { type: 'CNAME', name: "fm2._domainkey.#{Utils.domain_name}", content: "fm2.#{Utils.domain_name}.dkim.fmhosted.com", proxied: false, ttl: 1 },
-          { type: 'CNAME', name: "fm3._domainkey.#{Utils.domain_name}", content: "fm3.#{Utils.domain_name}.dkim.fmhosted.com", proxied: false, ttl: 1 },
-          { type: 'TXT', name: Utils.domain_name, content: "v=spf1 include:spf.messagingengine.com ?all", proxied: false, ttl: 1 },
+          { type: 'MX', name: Const.domain, priority: 10, content: 'in1-smtp.messagingengine.com', proxied: false, ttl: 1 },
+          { type: 'MX', name: Const.domain, priority: 20, content: 'in2-smtp.messagingengine.com', proxied: false, ttl: 1 },
+          { type: 'CNAME', name: "fm1._domainkey.#{Const.domain}", content: "fm1.#{Const.domain}.dkim.fmhosted.com", proxied: false, ttl: 1 },
+          { type: 'CNAME', name: "fm2._domainkey.#{Const.domain}", content: "fm2.#{Const.domain}.dkim.fmhosted.com", proxied: false, ttl: 1 },
+          { type: 'CNAME', name: "fm3._domainkey.#{Const.domain}", content: "fm3.#{Const.domain}.dkim.fmhosted.com", proxied: false, ttl: 1 },
+          { type: 'TXT', name: Const.domain, content: "v=spf1 include:spf.messagingengine.com ?all", proxied: false, ttl: 1 },
         ]
       end
 
@@ -57,7 +57,7 @@ module Patches
           method: :get,
           url: "https://api.cloudflare.com/client/v4/zones",
           headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
-        ).dig(:result).find { |x| x[:name] == Utils.domain_name }
+        ).dig(:result).find { |x| x[:name] == Const.domain }
       end
 
       def cf_dns_records

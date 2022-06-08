@@ -23,7 +23,7 @@ class Cache
     private
 
     def cf
-      File.join(Utils.project_root, 'tmp/depcache')
+      File.join(Const.local_root, 'tmp/depcache')
     end
   end
 end

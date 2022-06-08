@@ -41,21 +41,21 @@ module Patches
             server {
               listen 80;
               listen [::]:80;
-              server_name #{Utils.domain_name};
+              server_name #{Const.domain};
               return 301 https://$server_name$request_uri;
             }
 
             server {
-              server_name #{Utils.domain_name};
+              server_name #{Const.domain};
               listen 443 ssl http2;
               include /etc/letsencrypt/options-ssl-nginx.conf;
-              ssl_certificate /etc/letsencrypt/live/#{Utils.domain_name}/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/#{Utils.domain_name}/privkey.pem;
+              ssl_certificate /etc/letsencrypt/live/#{Const.domain}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/#{Const.domain}/privkey.pem;
               ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
               ssl_stapling on;
               ssl_stapling_verify on;
 
-              root #{remote_dir}/public;
+              root #{Const.remote_root}/public;
               try_files $uri $uri/index.html $uri.html @rails_app;
 
               location @rails_app {
@@ -75,7 +75,7 @@ module Patches
               }
 
               location /assets {
-                alias #{remote_dir}/public/assets;
+                alias #{Const.remote_root}/public/assets;
                 gzip_static on;
                 gzip on;
                 expires max;
@@ -83,7 +83,7 @@ module Patches
               }
 
               location /packs {
-                alias #{remote_dir}/public/packs;
+                alias #{Const.remote_root}/public/packs;
                 gzip_static on;
                 gzip on;
                 expires max;
@@ -92,11 +92,11 @@ module Patches
             }
 
             server {
-              server_name gf.#{Utils.domain_name};
+              server_name gf.#{Const.domain};
               listen 443 ssl http2;
               include /etc/letsencrypt/options-ssl-nginx.conf;
-              ssl_certificate /etc/letsencrypt/live/#{Utils.domain_name}/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/#{Utils.domain_name}/privkey.pem;
+              ssl_certificate /etc/letsencrypt/live/#{Const.domain}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/#{Const.domain}/privkey.pem;
               ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
               ssl_stapling on;
               ssl_stapling_verify on;
@@ -112,11 +112,11 @@ module Patches
             }
 
             server {
-              server_name pl.#{Utils.domain_name};
+              server_name pl.#{Const.domain};
               listen 443 ssl http2;
               include /etc/letsencrypt/options-ssl-nginx.conf;
-              ssl_certificate /etc/letsencrypt/live/#{Utils.domain_name}/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/#{Utils.domain_name}/privkey.pem;
+              ssl_certificate /etc/letsencrypt/live/#{Const.domain}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/#{Const.domain}/privkey.pem;
               ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
               ssl_stapling on;
               ssl_stapling_verify on;
@@ -132,11 +132,11 @@ module Patches
             }
 
             server {
-              server_name sq.#{Utils.domain_name};
+              server_name sq.#{Const.domain};
               listen 443 ssl http2;
               include /etc/letsencrypt/options-ssl-nginx.conf;
-              ssl_certificate /etc/letsencrypt/live/#{Utils.domain_name}/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/#{Utils.domain_name}/privkey.pem;
+              ssl_certificate /etc/letsencrypt/live/#{Const.domain}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/#{Const.domain}/privkey.pem;
               ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
               ssl_stapling on;
               ssl_stapling_verify on;

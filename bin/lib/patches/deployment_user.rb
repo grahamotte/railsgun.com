@@ -35,7 +35,7 @@ module Patches
       end
 
       def write_file_root(path, data)
-        local_tmp_file = File.expand_path(File.join(local_dir, 'tmp', 'file_to_upload'))
+        local_tmp_file = File.expand_path(File.join(Const.local_root, 'tmp', 'file_to_upload'))
         remote_tmp_file = '/tmp/root_uploaded_file'
 
         File.open(local_tmp_file, 'w+') { |f| f << data; f << "\n" }

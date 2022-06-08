@@ -18,7 +18,7 @@ class Text
     end
 
     def with_local_tmp(str = "")
-      path = File.expand_path(File.join(local_dir, 'tmp', SecureRandom.hex(16)))
+      path = File.expand_path(File.join(Const.local_root, 'tmp', SecureRandom.hex(16)))
       Cmd.local("touch #{path}")
       File.open(path, 'w+') { |f| f << str } if str.present?
       result = yield(path)
@@ -41,7 +41,7 @@ class Text
       end
 
       # setup tmp files for copy
-      local_tmp_file = File.expand_path(File.join(local_dir, 'tmp', 'file_to_upload'))
+      local_tmp_file = File.expand_path(File.join(Const.local_root, 'tmp', 'file_to_upload'))
       remote_tmp_file = '/tmp/uploaded_file'
 
       # copy over file

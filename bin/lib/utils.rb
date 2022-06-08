@@ -1,17 +1,5 @@
 class Utils
   class << self
-    def domain_name
-      File.basename(File.dirname(File.dirname(__dir__)))
-    end
-
-    def project_name
-      domain_name.split('.').first
-    end
-
-    def project_root
-      File.dirname(File.dirname(__dir__))
-    end
-
     def req(**params)
       puts "#{params.dig(:method).to_s.upcase} #{params.dig(:url)} #{params.dig(:payload)}".green
 
