@@ -14,10 +14,10 @@ module Patches
         if Utils.nofail { Utils.run_remote('sudo ls /var/lib/postgres/data/base') } # db exists
           restart_service('postgresql')
         else
-          Utils.run_remote("sudo -u postgres initdb -D /var/lib/postgres/data")
+          Utils.run_remote("sudo -u postgres initdb -E unicode -D /var/lib/postgres/data")
           restart_service('postgresql')
-          Utils.run_remote("sudo -u postgres createuser -s deploy")
-          Utils.run_remote("sudo -u postgres createdb #{Utils.project_name}_production")
+          Utils.run_remote("cd ~postgres; sudo -u postgres createuser -s deploy")
+          Utils.run_remote("cd ~postgres; sudo -u postgres createdb #{Utils.project_name}_production")
         end
       end
     end

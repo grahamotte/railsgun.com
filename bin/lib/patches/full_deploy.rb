@@ -20,6 +20,7 @@ module Patches
         Patches::Influx.call
         Patches::Telegraf.call
         Patches::Grafana.call
+        Patches::DevEnv.call
         Patches::InstallRclone.call
         Patches::MountNetworkDrives.call
         Patches::Dns.call
