@@ -6,11 +6,11 @@ module Patches
       end
 
       def apply
-        Utils.run_remote("sudo pacman -Syu --noconfirm")
-        Utils.run_remote('sudo pacman -S --noconfirm git base-devel')
-        Utils.run_remote('git clone https://aur.archlinux.org/yay.git')
-        Utils.run_remote('cd ~/yay; yes | makepkg -si')
-        Utils.run_remote('rm -rf ~/yay')
+        Cmd.remote("sudo pacman -Syu --noconfirm")
+        Cmd.remote('sudo pacman -S --noconfirm git base-devel')
+        Cmd.remote('git clone https://aur.archlinux.org/yay.git')
+        Cmd.remote('cd ~/yay; yes | makepkg -si')
+        Cmd.remote('rm -rf ~/yay')
       end
     end
   end

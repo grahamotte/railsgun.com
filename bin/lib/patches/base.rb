@@ -96,7 +96,7 @@ module Patches
       end
 
       def influx_token
-        @influx_token ||= Utils.run_remote('influx auth list --json | grep token')
+        @influx_token ||= Cmd.remote('influx auth list --json | grep token')
           .then { |x| JSON.parse("{#{x.gsub(',', '')}}") }
           .dig('token')
       end
@@ -115,12 +115,12 @@ module Patches
       #
 
       def installed?(program)
-        Utils.run_remote("command -v #{program}", bool: true)
+        Cmd.remote("command -v #{program}", bool: true)
       end
 
       def service_running?(service)
         Utils.nofail do
-          stat = Utils.run_remote("sudo systemctl | grep #{service}.service")&.downcase
+          stat = Cmd.remote("sudo systemctl | grep #{service}.service")&.downcase
           %w[loaded active running].all? { |x| stat.include?(x) }
         end
       end
@@ -128,8 +128,8 @@ module Patches
       def restart_service(service, force: false)
         return if !force && service_running?(service)
 
-        Utils.run_remote("sudo systemctl enable #{service}.service")
-        Utils.run_remote("sudo systemctl restart #{service}.service")
+        Cmd.remote("sudo systemctl enable #{service}.service")
+        Cmd.remote("sudo systemctl restart #{service}.service")
 
         raise 'not running' unless service_running?(service)
       rescue StandardError => e
@@ -140,7 +140,7 @@ module Patches
       def files_same?(path, data)
         Utils.nofail do
           md5local = Digest::MD5.hexdigest(data + "\n")
-          md5remote = Utils.run_remote("sudo md5sum #{path}").split(' ').first
+          md5remote = Cmd.remote("sudo md5sum #{path}").split(' ').first
 
           return md5local == md5remote
         end
@@ -151,16 +151,16 @@ module Patches
       end
 
       def write_file_local(path, data)
-        Utils.run_local("rm -f #{path}")
+        Cmd.local("rm -f #{path}")
         File.open(path, 'w+') { |f| f << data; f << "\n" }
       end
 
       def with_tmp_file(data = "")
         path = File.expand_path(File.join(local_dir, 'tmp', SecureRandom.hex(16)))
-        Utils.run_local("touch #{path}")
+        Cmd.local("touch #{path}")
         File.open(path, 'w+') { |f| f << data } if data.present?
         result = yield(path)
-        Utils.run_local("rm #{path}")
+        Cmd.local("rm #{path}")
         result
       end
 
@@ -169,8 +169,8 @@ module Patches
         return if files_same?(path, data)
 
         # create remote dir if it doesn't exist
-        unless Utils.run_remote("sudo [ -d #{File.dirname(path)} ]", bool: true)
-          Utils.nofail { Utils.run_remote("mkdir -p #{File.dirname(path)}") } || Utils.run_remote("sudo mkdir -p #{File.dirname(path)}")
+        unless Cmd.remote("sudo [ -d #{File.dirname(path)} ]", bool: true)
+          Utils.nofail { Cmd.remote("mkdir -p #{File.dirname(path)}") } || Cmd.remote("sudo mkdir -p #{File.dirname(path)}")
         end
 
         # setup tmp files for copy
@@ -179,8 +179,8 @@ module Patches
 
         # copy over file
         write_file_local(local_tmp_file, data)
-        Utils.run_local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{Instance.username}@#{Instance.ipv4}:#{remote_tmp_file}")
-        Utils.run_remote("sudo cp #{remote_tmp_file} #{path}")
+        Cmd.local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{Instance.username}@#{Instance.ipv4}:#{remote_tmp_file}")
+        Cmd.remote("sudo cp #{remote_tmp_file} #{path}")
       end
     end
   end

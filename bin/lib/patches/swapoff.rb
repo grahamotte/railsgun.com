@@ -2,7 +2,7 @@ module Patches
   class Swapoff < Base
     class << self
       def apply
-        Utils.run_remote('sudo /sbin/swapoff -a')
+        Cmd.remote('sudo /sbin/swapoff -a')
       end
     end
   end

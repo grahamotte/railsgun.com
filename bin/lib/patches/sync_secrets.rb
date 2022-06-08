@@ -11,9 +11,9 @@ module Patches
       end
 
       def apply
-        Utils.run_remote('sudo mkdir -p /var/www')
-        Utils.run_remote('sudo chown -R deploy:deploy /var/www')
-        Utils.run_remote("mkdir -p /var/www/#{Utils.domain_name}/config")
+        Cmd.remote('sudo mkdir -p /var/www')
+        Cmd.remote('sudo chown -R deploy:deploy /var/www')
+        Cmd.remote("mkdir -p /var/www/#{Utils.domain_name}/config")
         write_file(remote_rails_path, Secrets.all_rails_formatted)
         write_file(remote_path, Secrets.all.to_yaml)
 

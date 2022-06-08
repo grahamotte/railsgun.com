@@ -4,13 +4,13 @@ module Patches
       def needed?
         return false if archive_repo.blank?
 
-        Utils.run_local("#{git_prefix} ls-remote -h #{archive_repo} HEAD", bool: true)
+        Cmd.local("#{git_prefix} ls-remote -h #{archive_repo} HEAD", bool: true)
       end
 
       def apply
-        Utils.run_local("#{git_prefix} remote remove archive", bool: true)
-        Utils.run_local("#{git_prefix} remote add archive #{archive_repo}")
-        Utils.run_local("#{git_prefix} push -f archive master")
+        Cmd.local("#{git_prefix} remote remove archive", bool: true)
+        Cmd.local("#{git_prefix} remote add archive #{archive_repo}")
+        Cmd.local("#{git_prefix} push -f archive master")
       end
 
       private

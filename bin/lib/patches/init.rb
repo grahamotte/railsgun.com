@@ -6,13 +6,13 @@ module Patches
         raise 'invalid name' unless init_name.include?('.')
         raise "#{init_dir} already exists" if Dir.exist?(init_dir)
 
-        Utils.run_local("mkdir -p #{init_dir}")
-        Utils.run_local("git clone git@github.com:grahamotte/railsgun.com.git #{init_dir}")
-        Utils.run_local("cd #{init_dir} && asdf install")
-        Utils.run_local("cd #{init_dir} && bundle")
-        Utils.run_local("cd #{init_dir} && yarn")
-        Utils.run_local("cd #{init_dir} && bundle exec rake db:create")
-        Utils.run_local("cd #{init_dir} && prod regenerate")
+        Cmd.local("mkdir -p #{init_dir}")
+        Cmd.local("git clone git@github.com:grahamotte/railsgun.com.git #{init_dir}")
+        Cmd.local("cd #{init_dir} && asdf install")
+        Cmd.local("cd #{init_dir} && bundle")
+        Cmd.local("cd #{init_dir} && yarn")
+        Cmd.local("cd #{init_dir} && bundle exec rake db:create")
+        Cmd.local("cd #{init_dir} && prod regenerate")
       end
 
       # ---

@@ -20,9 +20,9 @@ elsif prog == :setup_remote
     TEXT
   end
   user_config_path = File.expand_path('~/.ssh/config')
-  Utils.run_local("touch #{user_config_path}")
-  Utils.run_local("chmod 600 #{user_config_path}")
+  Cmd.local("touch #{user_config_path}")
+  Cmd.local("chmod 600 #{user_config_path}")
   include_line = "Include #{config_path}"
-  included = Utils.run_local('cat ~/.ssh/config | grep Include').split("\n").include?(include_line)
+  included = Cmd.local('cat ~/.ssh/config | grep Include').split("\n").include?(include_line)
   File.open(user_config_path, 'a') { |f| f << "\n#{include_line}\n" } unless included
 end

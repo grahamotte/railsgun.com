@@ -6,11 +6,11 @@ module Patches
       end
 
       def apply
-        Utils.run_remote("#{yay_prefix} -S zsh")
-        Utils.run_remote("rm -rf /home/#{Instance.username}/.oh-my-zsh")
-        Utils.run_remote("rm -f /home/#{Instance.username}/.zshrc")
-        Utils.run_remote('sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
-        Utils.run_remote("git clone https://github.com/zsh-users/zsh-autosuggestions /home/#{Instance.username}/.oh-my-zsh/custom/plugins/zsh-autosuggestions")
+        Cmd.remote("#{yay_prefix} -S zsh")
+        Cmd.remote("rm -rf /home/#{Instance.username}/.oh-my-zsh")
+        Cmd.remote("rm -f /home/#{Instance.username}/.zshrc")
+        Cmd.remote('sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
+        Cmd.remote("git clone https://github.com/zsh-users/zsh-autosuggestions /home/#{Instance.username}/.oh-my-zsh/custom/plugins/zsh-autosuggestions")
         write_file(zshrc_path, zshrc)
       end
 

@@ -10,7 +10,7 @@ module Patches
       end
 
       def apply
-        Utils.run_remote("#{yay_prefix} -S telegraf-bin")
+        Cmd.remote("#{yay_prefix} -S telegraf-bin")
         write_file('/etc/telegraf/telegraf.conf', telegraf_conf)
         restart_service('telegraf')
       end

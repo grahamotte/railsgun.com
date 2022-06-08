@@ -6,7 +6,7 @@ module Patches
       end
 
       def apply
-        Utils.run_remote("#{yay_prefix} -S curl")
+        Cmd.remote("#{yay_prefix} -S curl")
       end
     end
   end

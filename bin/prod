@@ -61,10 +61,10 @@ if prog == :init
 end
 
 if prog == :log
-  Utils.run_remote("tail -f /var/www/#{Utils.domain_name}/log/production.log") if arg.nil? || arg == :rails
-  Utils.run_remote("tail -f /var/www/#{Utils.domain_name}/log/sidekiq.log") if arg == :sidekiq
-  Utils.run_remote("tail -f /var/log/nginx/access.log") if arg == :nginx
-  Utils.run_remote("sudo journalctl -f --since '2 hours ago' -u #{arg.to_s.gsub('sd_', '')}") if arg&.to_s&.start_with?('sd_')
+  Cmd.remote("tail -f /var/www/#{Utils.domain_name}/log/production.log") if arg.nil? || arg == :rails
+  Cmd.remote("tail -f /var/www/#{Utils.domain_name}/log/sidekiq.log") if arg == :sidekiq
+  Cmd.remote("tail -f /var/log/nginx/access.log") if arg == :nginx
+  Cmd.remote("sudo journalctl -f --since '2 hours ago' -u #{arg.to_s.gsub('sd_', '')}") if arg&.to_s&.start_with?('sd_')
 end
 
 if prog == :ssh

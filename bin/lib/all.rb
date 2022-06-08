@@ -15,6 +15,7 @@ require_relative 'config'
 require_relative 'utils'
 require_relative 'cache'
 require_relative 'secrets'
+require_relative 'cmd'
 require_relative 'instances/linode'
 require_relative 'instance'
 File
