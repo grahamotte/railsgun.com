@@ -2,7 +2,7 @@ module Patches
   class WritePacmanConfig < Base
     class << self
       def apply
-        write_file("/etc/pacman.conf", pacman_conf)
+        Text.write_remote("/etc/pacman.conf", pacman_conf)
       end
 
       # ---

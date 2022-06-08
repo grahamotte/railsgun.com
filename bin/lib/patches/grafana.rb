@@ -3,9 +3,9 @@ module Patches
     class << self
       def needed?
         return true unless installed?('grafana-server')
-        return true unless files_same?('/etc/grafana.ini', grafana_conf)
-        return true unless files_same?('/etc/grafana/provisioning/datasources/datasource.yaml', grafana_datasources_yaml)
-        return true unless files_same?('/etc/grafana/provisioning/dashboards/dashboards.yaml', grafana_dashboards_yaml)
+        return true unless Text.remote_md5_eq?('/etc/grafana.ini', grafana_conf)
+        return true unless Text.remote_md5_eq?('/etc/grafana/provisioning/datasources/datasource.yaml', grafana_datasources_yaml)
+        return true unless Text.remote_md5_eq?('/etc/grafana/provisioning/dashboards/dashboards.yaml', grafana_dashboards_yaml)
         return true unless service_running?('grafana')
 
         false
@@ -14,11 +14,11 @@ module Patches
       def apply
         Cmd.remote("#{yay_prefix} -S grafana")
         Cmd.remote("sudo rm -rf /var/lib/grafana/grafana.db")
-        write_file('/etc/grafana.ini', grafana_conf)
+        Text.write_remote('/etc/grafana.ini', grafana_conf)
         Cmd.remote("sudo mkdir -p /etc/grafana/provisioning/datasources")
-        write_file('/etc/grafana/provisioning/datasources/datasource.yaml', grafana_datasources_yaml)
+        Text.write_remote('/etc/grafana/provisioning/datasources/datasource.yaml', grafana_datasources_yaml)
         Cmd.remote("sudo mkdir -p /etc/grafana/provisioning/dashboards")
-        write_file('/etc/grafana/provisioning/dashboards/dashboards.yaml', grafana_dashboards_yaml)
+        Text.write_remote('/etc/grafana/provisioning/dashboards/dashboards.yaml', grafana_dashboards_yaml)
         restart_service('grafana')
       end
 

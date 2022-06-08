@@ -136,52 +136,6 @@ module Patches
         sleep(5)
         raise 'not running' unless service_running?(service)
       end
-
-      def files_same?(path, data)
-        Utils.nofail do
-          md5local = Digest::MD5.hexdigest(data + "\n")
-          md5remote = Cmd.remote("sudo md5sum #{path}").split(' ').first
-
-          return md5local == md5remote
-        end
-      end
-
-      def text_same?(a, b)
-        a.to_s.split("\n").select(&:present?) == b.to_s.split("\n").select(&:present?)
-      end
-
-      def write_file_local(path, data)
-        Cmd.local("rm -f #{path}")
-        File.open(path, 'w+') { |f| f << data; f << "\n" }
-      end
-
-      def with_tmp_file(data = "")
-        path = File.expand_path(File.join(local_dir, 'tmp', SecureRandom.hex(16)))
-        Cmd.local("touch #{path}")
-        File.open(path, 'w+') { |f| f << data } if data.present?
-        result = yield(path)
-        Cmd.local("rm #{path}")
-        result
-      end
-
-      def write_file(path, data)
-        # do nothing if the files are the same
-        return if files_same?(path, data)
-
-        # create remote dir if it doesn't exist
-        unless Cmd.remote("sudo [ -d #{File.dirname(path)} ]", bool: true)
-          Utils.nofail { Cmd.remote("mkdir -p #{File.dirname(path)}") } || Cmd.remote("sudo mkdir -p #{File.dirname(path)}")
-        end
-
-        # setup tmp files for copy
-        local_tmp_file = File.expand_path(File.join(local_dir, 'tmp', 'file_to_upload'))
-        remote_tmp_file = '/tmp/uploaded_file'
-
-        # copy over file
-        write_file_local(local_tmp_file, data)
-        Cmd.local("scp -i #{Secrets.id_rsa_path} #{local_tmp_file} #{Instance.username}@#{Instance.ipv4}:#{remote_tmp_file}")
-        Cmd.remote("sudo cp #{remote_tmp_file} #{path}")
-      end
     end
   end
 end

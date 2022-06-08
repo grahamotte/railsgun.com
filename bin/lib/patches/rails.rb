@@ -2,12 +2,12 @@ module Patches
   class Rails < Base
     class << self
       def apply
-        write_file("/etc/systemd/system/rails.service", rails_unit)
-        write_file("/etc/systemd/system/sidekiq.service", sidekiq_unit)
+        Text.write_remote("/etc/systemd/system/rails.service", rails_unit)
+        Text.write_remote("/etc/systemd/system/sidekiq.service", sidekiq_unit)
         Cmd.remote("sudo systemctl daemon-reload")
 
         File.open("#{local_dir}/config/sidekiq.yml", 'w') { |f| f << sidekiq_yml }
-        write_file("#{remote_dir}/config/sidekiq.yml", sidekiq_yml)
+        Text.write_remote("#{remote_dir}/config/sidekiq.yml", sidekiq_yml)
 
         restart_service("rails", force: true)
         restart_service("sidekiq", force: true)

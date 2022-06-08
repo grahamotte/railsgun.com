@@ -2,7 +2,7 @@ module Patches
   class DevEnv < Base
     class << self
       def needed?
-        !files_same?(zshrc_path, zshrc)
+        !Text.remote_md5_eq?(zshrc_path, zshrc)
       end
 
       def apply
@@ -11,7 +11,7 @@ module Patches
         Cmd.remote("rm -f /home/#{Instance.username}/.zshrc")
         Cmd.remote('sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
         Cmd.remote("git clone https://github.com/zsh-users/zsh-autosuggestions /home/#{Instance.username}/.oh-my-zsh/custom/plugins/zsh-autosuggestions")
-        write_file(zshrc_path, zshrc)
+        Text.write_remote(zshrc_path, zshrc)
       end
 
       private

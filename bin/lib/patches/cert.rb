@@ -28,7 +28,7 @@ module Patches
       def apply
         Cmd.remote("#{yay_prefix} -S certbot certbot-nginx nginx")
         Cmd.remote('sudo systemctl stop nginx.service')
-        write_file('/etc/nginx/nginx.conf', default_nginx_conf)
+        Text.write_remote('/etc/nginx/nginx.conf', default_nginx_conf)
         Cmd.remote('sudo fuser -k 80/tcp || true')
         Cmd.remote('sudo systemctl start nginx.service')
         Cmd.remote('sudo nginx -t')

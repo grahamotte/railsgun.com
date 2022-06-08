@@ -5,7 +5,7 @@ module Patches
         Cmd.remote("#{yay_prefix} -S nginx") unless installed?(:nginx)
         Cmd.remote('sudo mkdir -p /var/www')
         Cmd.remote('sudo chown -R deploy:deploy /var/www')
-        write_file("/etc/nginx/nginx.conf", nginx_conf)
+        Text.write_remote("/etc/nginx/nginx.conf", nginx_conf)
         restart_service("nginx", force: true)
       end
 

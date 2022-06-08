@@ -3,7 +3,7 @@ module Patches
     class << self
       def needed?
         mounts.each do |name, rc|
-          return true unless files_same?("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))
+          return true unless Text.remote_md5_eq?("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))
           return true unless service_running?("mount_#{name}")
         end
 
@@ -14,7 +14,7 @@ module Patches
         Cmd.remote("sudo rm -f /etc/systemd/system/mount_*.service", bool: true)
 
         mounts.each do |name, rc|
-          write_file("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))
+          Text.write_remote("/etc/systemd/system/mount_#{name}.service", mount_unit(name, rc))
           Cmd.remote("sudo systemctl daemon-reload")
           Cmd.remote("sudo mkdir -p /mnt/#{name}")
           Cmd.remote("sudo chmod 775 /mnt/#{name}")

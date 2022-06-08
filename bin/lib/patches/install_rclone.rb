@@ -5,8 +5,8 @@ module Patches
         Secrets.reload!
 
         return true unless installed?('rclone')
-        return true unless files_same?("/etc/fuse.conf", fuse_conf)
-        return true unless text_same?(local_config, remote_config)
+        return true unless Text.remote_md5_eq?("/etc/fuse.conf", fuse_conf)
+        return true unless Text.eq?(local_config, remote_config)
 
         false
       end
@@ -15,22 +15,22 @@ module Patches
         Secrets.reload!
 
         Cmd.remote("#{yay_prefix} -S fuse2")
-        write_file("/etc/fuse.conf", fuse_conf)
+        Text.write_remote("/etc/fuse.conf", fuse_conf)
 
         Cmd.remote("#{yay_prefix} -S rclone")
         Cmd.remote("mkdir -p #{File.dirname(remote_rclone_conf_path)}")
         Cmd.remote("sudo touch #{remote_rclone_conf_path}")
         Cmd.remote("sudo chown #{Instance.username}:#{Instance.username} #{remote_rclone_conf_path}")
-        write_file(remote_rclone_conf_path, local_config)
+        Text.write_remote(remote_rclone_conf_path, local_config)
 
         if Secrets.rclone.dig('dropbox').present?
           local_dropbox_token = Secrets.rclone['dropbox']['token']
-          remote_dropbox_token = with_tmp_file(remote_config) { |x| ParseConfig.new(x)['dropbox']['token'] }
+          remote_dropbox_token = Text.with_local_tmp(remote_config) { |x| ParseConfig.new(x)['dropbox']['token'] }
           if local_dropbox_token || remote_dropbox_token
             newest_token = dropbox_token_expiry(local_dropbox_token) > dropbox_token_expiry(remote_dropbox_token) ? local_dropbox_token : remote_dropbox_token
             Secrets.all['rclone']['dropbox']['token'] = newest_token
             Secrets.save!
-            write_file(remote_rclone_conf_path, Secrets.rclone_config)
+            Text.write_remote(remote_rclone_conf_path, Secrets.rclone_config)
           end
         end
       end
