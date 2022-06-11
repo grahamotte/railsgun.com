@@ -1,5 +1,14 @@
 module Vendors
   class Backblaze
+    def authorized?
+      return false if Secrets.backup_bucket.dig('access_key_id').blank?
+      return false if Secrets.backup_bucket.dig('secret_access_key').blank?
+      return false if Secrets.backup_bucket.dig('bucket').blank?
+      return false if auth.blank?
+
+      true
+    end
+
     def upload(path)
       [
         'curl -s',

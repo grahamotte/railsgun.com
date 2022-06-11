@@ -2,7 +2,10 @@ module Patches
   class DbRestore < Base
     class << self
       def needed?
-        Instance.exists?
+        return false unless Instance.exists?
+        return false unless bb.authorized?
+
+        true
       end
 
       def apply
