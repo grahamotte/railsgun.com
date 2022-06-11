@@ -1,14 +1,27 @@
 module Patches
   class DbBackup < Base
     class << self
+      def needed?
+        Instance.exists?
+      end
+
       def apply
-        return(puts('does not exist.')) unless Instance.exists?
+        path = "#{Const.home}/#{Const.db_name}_#{Time.now.to_i}.sql"
+        Cmd.remote("/usr/bin/pg_dump -U #{Instance.username} --clean #{Const.db_name} > #{path}")
+        bb.upload(path)
 
-        db_name = "#{Const.project}_production"
-        file = "/mnt/dbs/#{db_name}_#{Time.now.to_i}.sql"
+        bb
+          .backup_names
+          .select { |x| x.split('.').first.split('_').last.to_i < (Time.now.to_i - 86400 * 30) }
+          .each { |x| puts "rm #{x}"; bb.delete(x) }
+      ensure
+        Cmd.remote("rm -f #{path}")
+      end
 
-        Cmd.remote("pg_dump -U #{Instance.username} --clean #{db_name} > #{file}")
-        Cmd.remote("stat #{file}")
+      private
+
+      def bb
+        @bb ||= Vendors::Backblaze.new
       end
     end
   end

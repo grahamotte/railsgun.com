@@ -1,16 +1,33 @@
 module Patches
   class DbClone < Base
     class << self
-      def apply
-        return(puts('does not exist.')) unless Instance.exists?
+      def needed?
+        Instance.exists?
+      end
 
-        Cmd.remote("rm -f ~/#{Const.project}_production.sql")
-        Cmd.remote("pg_dump -U #{Instance.username} --clean #{Const.project}_production > ~/#{Const.project}_production.sql")
-        Cmd.local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{Instance.username}@#{Instance.ipv4}:~/#{Const.project}_production.sql #{Const.local_root}/tmp/#{Const.project}_production.sql")
-        Cmd.remote("rm -f ~/#{Const.project}_production.sql")
-        Cmd.local("psql #{Const.project}_development < #{Const.local_root}/tmp/#{Const.project}_production.sql")
-        Cmd.local("rm #{Const.local_root}/tmp/#{Const.project}_production.sql")
-        Cmd.remote("rm -f ~/#{Const.project}_production.sql")
+      def apply
+        remote_path = "#{Const.home}/#{bb.latest_backup_key}"
+        local_path = "#{Const.local_root}/tmp/#{Const.project}_production.sql"
+
+        bb.download(bb.latest_backup_key, remote_path)
+
+        [
+          "rsync -av",
+          "-e \"ssh -i #{Secrets.id_rsa_path}\"",
+          "#{Instance.username}@#{Instance.ipv4}:#{remote_path}",
+          local_path,
+        ].join(' ').then { |x| Cmd.local(x) }
+
+        Cmd.local("psql #{Const.project}_development < #{local_path}")
+      ensure
+        Cmd.remote("rm -f #{remote_path}")
+        Cmd.local("rm -f #{local_path}")
+      end
+
+      private
+
+      def bb
+        @bb ||= Vendors::Backblaze.new
       end
     end
   end

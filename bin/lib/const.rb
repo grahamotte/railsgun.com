@@ -16,6 +16,14 @@ class Const
       "/var/www/#{domain}"
     end
 
+    def db_name
+      "#{project}_production"
+    end
+
+    def home
+      "/home/#{Instance.username}"
+    end
+
     def mounts
       x = {}
       x = { dbs: Secrets.dbs_bucket } if Secrets.dbs_bucket.present?
@@ -29,8 +37,8 @@ class Const
         .compact
         .push('www', 'gf', 'sq')
         .uniq
-        .map { |x| "#{x}.#{Const.domain}" }
-        .unshift(Const.domain)
+        .map { |x| "#{x}.#{domain}" }
+        .unshift(domain)
     end
 
     def job_concurrency
