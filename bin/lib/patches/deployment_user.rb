@@ -2,7 +2,7 @@ module Patches
   class DeploymentUser < Base
     class << self
       def needed?
-        !!Utils.nofail { Cmd.remote_root('ls -lah') }
+        !!Utils.nofail { run_remote_root('ls -lah') }
       end
 
       def apply
