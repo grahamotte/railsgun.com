@@ -72,7 +72,7 @@ if prog == :ssh
 end
 
 if prog == :console
-  system("ssh -i #{Secrets.id_rsa_path} -t deploy@#{Instance.ipv4} \"#{Patches::Base.Const.rails} rails console\"")
+  system("ssh -i #{Secrets.id_rsa_path} -t deploy@#{Instance.ipv4} \"#{Const.rails} rails console\"")
 end
 
 if prog == :pry
