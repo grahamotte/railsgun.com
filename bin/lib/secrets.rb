@@ -16,16 +16,6 @@ class Secrets
       { "production" => all, "development" => all }.to_yaml
     end
 
-    def save!
-      raise 'no secrets!' if all.blank? || @all.blank? # pre-loads all
-      File.open(path, 'w+') { |f| f << all.to_yaml }
-    end
-
-    def reload!
-      @all = nil
-      all
-    end
-
     def rclone_config
       return if rclone.blank?
 
