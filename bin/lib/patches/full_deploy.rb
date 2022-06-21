@@ -28,7 +28,6 @@ module Patches
         Patches::SyncSecrets.call
         Patches::Postgres.call
         Patches::Redis.call
-        Patches::RailsAssets.call
         Patches::Rails.call
         Patches::Swapoff.call
         Patches::CleanCaches.call

@@ -20,7 +20,6 @@ end
 if prog == :deploy
   if arg == :quick
     Patches::GitAll.call
-    Patches::RailsAssets.call
     Patches::Rails.call
   elsif arg == :code
     Patches::GitAll.call
