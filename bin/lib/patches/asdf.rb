@@ -1,5 +1,5 @@
 module Patches
-  class InstallAsdf < Base
+  class Asdf < Base
     class << self
       def needed?
         !Cmd.remote("#{Const.asdf} --version", bool: true)

@@ -1,5 +1,5 @@
 module Patches
-  class MountNetworkDrives < Base
+  class NetworkDrives < Base
     class << self
       def needed?
         Const.mounts.each do |name, rc|

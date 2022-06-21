@@ -1,5 +1,5 @@
 module Patches
-  class InstallRclone < Base
+  class Rclone < Base
     class << self
       def needed?
         return true unless Instance.installed?('rclone')

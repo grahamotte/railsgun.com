@@ -1,5 +1,5 @@
 module Patches
-  class InstallYay < Base
+  class Yay < Base
     class << self
       def needed?
         !Instance.installed?(:yay)

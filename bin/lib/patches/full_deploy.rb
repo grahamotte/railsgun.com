@@ -10,19 +10,18 @@ module Patches
         Patches::MakeKnown.call
         Patches::DeploymentUser.call
         Patches::WritePacmanConfig.call
-        Patches::InstallYay.call
+        Patches::Yay.call
         Patches::SystemUpdate.call
-        Patches::InstallAsdf.call
-        Patches::InstallAsdfTools.call
-        Patches::InstallCurl.call
-        Patches::InstallHtop.call
+        Patches::Asdf.call
+        Patches::AsdfTools.call
+        Patches::InstallUtils.call
         Patches::CleanCaches.call
         Patches::Influx.call
         Patches::Telegraf.call
         Patches::Grafana.call
         Patches::DevEnv.call
-        Patches::InstallRclone.call
-        Patches::MountNetworkDrives.call
+        Patches::Rclone.call
+        Patches::NetworkDrives.call
         Patches::Dns.call
         Patches::Cert.call
         Patches::Nginx.call

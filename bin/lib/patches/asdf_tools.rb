@@ -1,5 +1,5 @@
 module Patches
-  class InstallAsdfTools < Base
+  class AsdfTools < Base
     class << self
       def needed?
         tool_versions.each do |t, v|
