@@ -26,7 +26,7 @@ module Patches
         # sync with origin www
         Cmd.remote('sudo mkdir -p /var/www')
         Cmd.remote("sudo chown -R #{Instance.username}:#{Instance.username} /var/www")
-        Cmd.remote("git clone #{remote_origin_dir} #{remote_dir}") unless remote_dir_exists?
+        Cmd.remote("git clone #{remote_origin_dir} #{Const.remote_root}") unless remote_dir_exists?
         Cmd.remote("cd #{Const.remote_root}; git fetch")
         Cmd.remote("cd #{Const.remote_root}; git checkout -- .")
         Cmd.remote("cd #{Const.remote_root}; git reset --hard origin/master")
