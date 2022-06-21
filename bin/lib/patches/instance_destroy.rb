@@ -1,9 +1,11 @@
 module Patches
   class InstanceDestroy < Base
     class << self
-      def apply
-        return(puts("does not exist.")) unless Instance.exists?
+      def needed?
+        Instance.exists?
+      end
 
+      def apply
         Instance.destroy
       end
     end

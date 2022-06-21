@@ -1,9 +1,11 @@
 module Patches
   class InstanceCreate < Base
     class << self
-      def apply
-        return(puts('already exists.')) if Instance.exists?
+      def needed?
+        !Instance.exists?
+      end
 
+      def apply
         Instance.create
       end
     end
