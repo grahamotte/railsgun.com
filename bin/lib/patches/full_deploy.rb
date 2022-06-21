@@ -9,7 +9,6 @@ module Patches
         Patches::Lint.call
         Patches::MakeKnown.call
         Patches::DeploymentUser.call
-        Patches::WritePacmanConfig.call
         Patches::Yay.call
         Patches::SystemUpdate.call
         Patches::Asdf.call
