@@ -1,5 +1,5 @@
 module Patches
-  class SyncUpstreamCode < Base
+  class GitUpstream < Base
     class << self
       def apply
         Cmd.local('git remote remove upstream', bool: true)

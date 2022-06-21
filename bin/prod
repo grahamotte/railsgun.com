@@ -19,11 +19,11 @@ end
 
 if prog == :deploy
   if arg == :quick
-    Patches::SyncDeploymentCode.call
+    Patches::GitAll.call
     Patches::RailsAssets.call
     Patches::Rails.call
   elsif arg == :code
-    Patches::SyncAllCode.call
+    Patches::GitAll.call
   elsif arg == :lint
     Patches::Lint.call
   elsif arg == :cert

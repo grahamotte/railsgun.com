@@ -1,7 +1,10 @@
 module Patches
-  class CreateDeploymentOrigin < Base
+  class GitOrigin < Base
     class << self
       def needed?
+        # local origin should never exist
+        Cmd.local('git remote remove origin', bool: true)
+
         return false unless Instance.exists?
         return true unless remote_origin_exists?
 

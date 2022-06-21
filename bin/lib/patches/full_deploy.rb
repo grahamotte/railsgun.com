@@ -15,7 +15,6 @@ module Patches
         Patches::Asdf.call
         Patches::AsdfTools.call
         Patches::InstallUtils.call
-        Patches::CleanCaches.call
         Patches::Influx.call
         Patches::Telegraf.call
         Patches::Grafana.call
@@ -25,13 +24,14 @@ module Patches
         Patches::Dns.call
         Patches::Cert.call
         Patches::Nginx.call
-        Patches::SyncAllCode.call
+        Patches::GitAll.call
         Patches::SyncSecrets.call
         Patches::Postgres.call
         Patches::Redis.call
         Patches::RailsAssets.call
         Patches::Rails.call
         Patches::Swapoff.call
+        Patches::CleanCaches.call
         Config::Patch.call
       end
     end

@@ -1,5 +1,5 @@
 module Patches
-  class SyncArchiveCode < Base
+  class GitArchive < Base
     class << self
       def needed?
         return false if archive_repo.blank?

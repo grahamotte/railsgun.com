@@ -1,5 +1,5 @@
 module Patches
-  class SyncDeploymentCode < Base
+  class GitDeployment < Base
     class << self
       def needed?
         return false unless Instance.exists?
