@@ -3,44 +3,27 @@ module Patches
     class << self
       def needed?
         to_id = ->(r) { "#{r['type'] || r[:type]} #{r['name'] || r[:name]} #{r['content'] || r[:content]}" }
-
-        existing_records = cf_dns_records.map(&to_id).sort
-        desired_records = dns_config.map(&to_id).sort
-
+        existing_records = current_records.map(&to_id).sort
+        desired_records = records_config.map(&to_id).sort
         existing_records != desired_records
       end
 
       def apply
-        if cf_zone
-          Utils.req(
-            url: "https://api.cloudflare.com/client/v4/zones/#{cf_zone.dig(:id)}",
-            method: :delete,
-            headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
-          )
-        end
+        # create zone
+        cf_req(:post, '/zones', { name: Const.domain }.to_json) if zone_id.blank?
 
-        cloudflare_zone = Utils.req(
-          url: "https://api.cloudflare.com/client/v4/zones",
-          method: :post,
-          payload: { name: Const.domain }.to_json,
-          headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
-        )
+        # clear any current records
+        current_records.each { |x| cf_req(:delete, "/zones/#{zone_id}/dns_records/#{x[:id]}") }
+        sleep(2)
 
-        dns_config.each do |record|
-          Utils.req(
-            url: "https://api.cloudflare.com/client/v4/zones/#{cloudflare_zone.dig(:result, :id)}/dns_records",
-            method: :post,
-            payload: record.to_json,
-            headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
-          )
-        end
-
-        sleep(15) # give it a bit to sync up
+        # setup records
+        records_config.each { |x| cf_req(:post, "/zones/#{zone_id}/dns_records", x.to_json) }
+        sleep(15)
       end
 
-      # ---
+      private
 
-      def dns_config
+      def records_config
         [
           *Const.subdomains.map { |x| { type: 'A', name: x, content: Instance.ipv4, proxied: false, ttl: 1 } },
           { type: 'MX', name: Const.domain, priority: 10, content: 'in1-smtp.messagingengine.com', proxied: false, ttl: 1 },
@@ -52,22 +35,26 @@ module Patches
         ]
       end
 
-      def cf_zone
+      def cf_req(method, path, payload = nil)
         Utils.req(
-          method: :get,
-          url: "https://api.cloudflare.com/client/v4/zones",
-          headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
-        ).dig(:result).find { |x| x[:name] == Const.domain }
+          url: "https://api.cloudflare.com/client/v4#{path}",
+          method: method,
+          payload: payload,
+          headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", 'Content-Type' => 'application/json' },
+        )
       end
 
-      def cf_dns_records
-        return [] if cf_zone.nil?
+      def zone_id
+        @zone_id ||= cf_req(:get, '/zones')
+          .dig(:result)
+          .find { |x| x[:name] == Const.domain }
+          &.dig(:id)
+      end
 
-        Utils.req(
-          method: :get,
-          url: "https://api.cloudflare.com/client/v4/zones/#{cf_zone[:id]}/dns_records",
-          headers: { Authorization: "Bearer #{Secrets.cloudflare_token}", content_type: :json, accept: :json },
-        ).dig(:result)
+      def current_records
+        return [] if zone_id.nil?
+
+        cf_req(:get, "/zones/#{zone_id}/dns_records").dig(:result)
       end
     end
   end
