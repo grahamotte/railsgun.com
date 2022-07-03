@@ -15,7 +15,7 @@ Rails.application.configure do
   config.active_support.deprecation = :log
   config.active_support.disallowed_deprecation = :raise
   config.active_support.disallowed_deprecation_warnings = []
-  config.assets.debug = true
+  config.assets.debug = false
   config.assets.quiet = true
   config.cache_classes = false
   config.cache_store = :redis_cache_store, { url: 'redis://localhost:6379/1' }
