@@ -13,7 +13,7 @@ module Patches
         local_path = "#{Const.local_root}/tmp/#{Const.project}_production.sql"
         remote_path = "#{Const.home}/#{key}"
 
-        Cmd.run("#{Const.yay} -S aws-cli") unless Instance.installed?('aws')
+        Cmd.remote("#{Const.yay} -S aws-cli") unless Instance.installed?('aws')
         Cmd.remote("#{Const.aws_cli_s3} cp s3://#{Secrets.backup_bucket.dig('bucket')}/#{key} #{remote_path}")
         Cmd.run("#{Const.yay} -S rsync") unless Instance.installed?('rsync')
         Cmd.local("rsync -av -e \"ssh -i #{Secrets.id_rsa_path}\" #{Instance.username}@#{Instance.ipv4}:#{remote_path} #{local_path}")

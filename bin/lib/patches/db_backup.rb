@@ -12,7 +12,7 @@ module Patches
         key = "#{Const.db_name}_#{Time.now.to_i}.sql"
         path = "#{Const.home}/#{key}"
 
-        Cmd.run("#{Const.yay} -S aws-cli") unless Instance.installed?('aws')
+        Cmd.remote("#{Const.yay} -S aws-cli") unless Instance.installed?('aws')
         Cmd.remote("/usr/bin/pg_dump -U #{Instance.username} --clean #{Const.db_name} > #{path}")
         Cmd.remote("#{Const.aws_cli_s3} cp #{path} s3://#{Secrets.backup_bucket.dig('bucket')}/#{key}")
 
