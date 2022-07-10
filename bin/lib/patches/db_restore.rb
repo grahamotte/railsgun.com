@@ -2,24 +2,21 @@ module Patches
   class DbRestore < Base
     class << self
       def needed?
+        return false unless Const.backups_setup?
         return false unless Instance.exists?
-        return false unless bb.authorized?
 
         true
       end
 
       def apply
-        path = "#{Const.home}/#{bb.latest_backup_key}"
-        bb.download(bb.latest_backup_key, path)
+        key = Const.backup_keys.last
+        path = "#{Const.home}/#{key}"
+
+        Cmd.run("#{Const.yay} -S aws-cli") unless Instance.installed?('aws')
+        Cmd.remote("#{Const.aws_cli_s3} cp s3://#{Secrets.backup_bucket.dig('bucket')}/#{key} #{path}")
         Cmd.remote("psql #{Const.db_name} < #{path}")
       ensure
         Cmd.remote("rm -f #{path}")
-      end
-
-      private
-
-      def bb
-        @bb ||= Vendors::Backblaze.new
       end
     end
   end

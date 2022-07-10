@@ -78,5 +78,32 @@ class Const
         .then { |x| JSON.parse("{#{x.gsub(',', '')}}") }
         .dig('token')
     end
+
+    def backups_setup?
+      return false if Secrets.backup_bucket.dig('access_key_id').blank?
+      return false if Secrets.backup_bucket.dig('secret_access_key').blank?
+      return false if Secrets.backup_bucket.dig('bucket').blank?
+      return false if Secrets.backup_bucket.dig('endpoint').blank?
+
+      true
+    end
+
+    def backup_keys
+      Cmd
+        .remote("#{aws_cli_s3} ls --recursive #{Secrets.backup_bucket.dig('bucket')} | grep #{db_name}")
+        .split("\n")
+        .map { |x| x.split.last }
+        .select { |x| x.start_with?(db_name) }
+        .sort
+    end
+
+    def aws_cli_s3
+      [
+        "export AWS_ACCESS_KEY_ID=#{Secrets.backup_bucket.dig('access_key_id')};",
+        "export AWS_SECRET_ACCESS_KEY=#{Secrets.backup_bucket.dig('secret_access_key')};",
+        "aws --endpoint-url #{Secrets.backup_bucket.dig('endpoint')}",
+        "s3",
+      ].join(' ')
+    end
   end
 end
