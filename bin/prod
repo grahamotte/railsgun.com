@@ -13,6 +13,9 @@ def arg
   ARGV[1]&.to_sym
 end
 
+PROG = prog
+ARG = arg
+
 #
 # programs
 #
@@ -41,7 +44,7 @@ if prog == :db
 end
 
 if prog == :instance
-  pp Instance.show if arg == :show
+  Patches::InstanceShow.call if arg == :show
   Patches::InstanceCreate.call if arg == :create
   Patches::InstanceDestroy.call if arg == :destroy
 end
@@ -55,7 +58,6 @@ if prog == :regenerate
 end
 
 if prog == :init
-  INIT_NAME = arg.to_s
   Patches::Init.call
 end
 

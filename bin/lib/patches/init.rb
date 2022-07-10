@@ -15,10 +15,10 @@ module Patches
         Cmd.local("cd #{init_dir} && prod regenerate")
       end
 
-      # ---
+      private
 
       def init_name
-        INIT_NAME
+        ARG
       end
 
       def init_dir
